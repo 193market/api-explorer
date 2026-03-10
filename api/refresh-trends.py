@@ -224,7 +224,101 @@ JSON 배열만 출력하세요. 다른 텍스트 없이."""
         else:
             idea['type'] = 'random'
         idea['competitors'] = 0
-        idea['apis'] = []  # 프론트엔드 호환용
+        if not idea.get('apis'):
+            idea['apis'] = []
+
+    return ideas
+
+
+def load_apis():
+    """apis.json 로드"""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    apis_path = os.path.join(script_dir, '..', 'apis.json')
+    if not os.path.exists(apis_path):
+        apis_path = os.path.join(script_dir, 'apis.json')
+    if os.path.exists(apis_path):
+        with open(apis_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return []
+
+
+def match_real_apis(ideas, all_apis):
+    """아이디어별로 실제 공공데이터 API를 매칭 (카테고리 엄격 적용)"""
+    # 불용어 (너무 흔해서 매칭에 쓸모없는 단어)
+    STOP_WORDS = {
+        'API', '조합', '조회', '정보', '서비스', '데이터', '활용', '기반', '통합',
+        '실시간', '맞춤', '추천', '확인', '분석', '비교', '계산', '현황', '목록',
+        '시스템', '관리', '제공', '이용', '결합', '자동', '최적', '타이밍', '방법',
+        '가이드', '알림', '추적', '변동', '위험', '안전', '지수', '트렌드', '상품',
+    }
+
+    for idea in ideas:
+        categories = idea.get('categories', [])
+        idea_text = f"{idea.get('name','')} {idea.get('description','')}"
+
+        # 핵심 키워드만 추출 (3글자 이상 우선)
+        idea_keywords = set()
+        for word in re.split(r'[\s+/·,→()\[\]]+', idea_text):
+            word = re.sub(r'[^\w가-힣]', '', word)
+            if len(word) >= 2 and word not in STOP_WORDS:
+                idea_keywords.add(word)
+
+        matched = []
+        seen_ids = set()
+
+        # 카테고리별로 순차 매칭
+        for cat in categories:
+            cat_apis = [a for a in all_apis if a.get('category_main') == cat]
+
+            scored = []
+            for api in cat_apis:
+                api_text = f"{api['name']} {api.get('keywords', '')}"
+                # 키워드 매칭 (API 이름+키워드에서만, description 제외로 정확도 향상)
+                kw_hits = [kw for kw in idea_keywords if kw in api_text]
+                kw_score = len(kw_hits)
+                if kw_score > 0:
+                    # 3글자 이상 키워드 매칭에 보너스
+                    long_kw_bonus = sum(1 for kw in kw_hits if len(kw) >= 3) * 2
+                    rest_bonus = 5 if api.get('api_type') == 'REST' else 0
+                    dl_bonus = min(api.get('downloads', 0) / 10000, 3)
+                    total = kw_score * 10 + long_kw_bonus + rest_bonus + dl_bonus
+                    scored.append((api, total, kw_score))
+
+            scored.sort(key=lambda x: (-x[1],))
+
+            for api, total, kw in scored[:2]:
+                if api['id'] not in seen_ids:
+                    matched.append({
+                        'id': api['id'],
+                        'name': api['name'],
+                        'type': api.get('api_type', '?'),
+                        'downloads': api.get('downloads', 0),
+                        'provider': api.get('provider', ''),
+                    })
+                    seen_ids.add(api['id'])
+
+        # 카테고리 인기 API로 보충 (최소 2개 보장)
+        if len(matched) < 2:
+            for cat in categories:
+                popular = sorted(
+                    [a for a in all_apis if a.get('category_main') == cat and a['id'] not in seen_ids],
+                    key=lambda a: -a.get('downloads', 0)
+                )
+                for api in popular[:2]:
+                    matched.append({
+                        'id': api['id'],
+                        'name': api['name'],
+                        'type': api.get('api_type', '?'),
+                        'downloads': api.get('downloads', 0),
+                        'provider': api.get('provider', ''),
+                    })
+                    seen_ids.add(api['id'])
+                    if len(matched) >= 3:
+                        break
+                if len(matched) >= 3:
+                    break
+
+        idea['apis'] = matched[:4]
 
     return ideas
 
@@ -248,7 +342,12 @@ class handler(BaseHTTPRequestHandler):
                 self._send_json({'success': False, 'message': 'Claude API 키가 설정되지 않았습니다.'}, 500)
                 return
 
-            # 4. 결과 분류
+            # 4. 실제 공공데이터 API 매칭
+            all_apis = load_apis()
+            if all_apis:
+                ai_ideas = match_real_apis(ai_ideas, all_apis)
+
+            # 5. 결과 분류
             trend_ideas = [i for i in ai_ideas if i.get('type') == 'trend']
             smart_ideas = [i for i in ai_ideas if i.get('type') == 'smart']
             random_ideas = [i for i in ai_ideas if i.get('type') == 'random']

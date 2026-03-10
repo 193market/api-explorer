@@ -444,13 +444,19 @@ main {
 .feasibility.low { background: rgba(239,68,68,0.15); color: var(--red); }
 .idea-card .ic-news, .idea-card .ic-apis { display: none; }
 .idea-card.expanded .ic-news, .idea-card.expanded .ic-apis { display: block; }
-.idea-card .ic-basket { display: none; }
-.idea-card.expanded .ic-basket { display: inline-block; }
 .idea-card .ic-desc {
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .idea-card.expanded .ic-desc {
   display: block; -webkit-line-clamp: unset; overflow: visible;
+}
+.idea-card::after {
+  content: '▼ 클릭해서 API 보기';
+  display: block; font-size: 11px; color: var(--text2);
+  margin-top: 8px; text-align: right;
+}
+.idea-card.expanded::after {
+  content: '▲ 접기';
 }
 .idea-card .ic-news div { margin-bottom: 3px; }
 .idea-card .ic-basket {
@@ -534,6 +540,37 @@ main {
 .refresh-trends-btn:hover { background: #2563eb; }
 .refresh-trends-btn:disabled { opacity: 0.5; cursor: wait; }
 
+/* API Key Modal */
+.apikey-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center; z-index: 9000;
+}
+.apikey-modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; width: 480px; max-width: 90vw;
+}
+.apikey-modal h3 { font-size: 18px; margin-bottom: 8px; }
+.apikey-modal p { color: var(--text2); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+.apikey-modal input {
+  width: 100%; padding: 12px 16px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+  font-size: 14px; outline: none; font-family: monospace; margin-bottom: 16px;
+}
+.apikey-modal input:focus { border-color: var(--accent); }
+.apikey-modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+.apikey-modal-btns button {
+  padding: 10px 20px; border-radius: 8px; border: none;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn-cancel { background: var(--surface2); color: var(--text2); }
+.btn-save { background: var(--accent); color: #fff; }
+.key-indicator {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px; cursor: pointer;
+  white-space: nowrap;
+}
+.key-ok { background: rgba(34,197,94,0.15); color: var(--green); }
+.key-none { background: rgba(239,68,68,0.15); color: var(--red); }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -563,6 +600,7 @@ main {
       <button id="navToss" onclick="showTossApps()">토스 앱</button>
       <button id="navBasket" onclick="showBasketPage()">장바구니</button>
     </nav>
+    <span id="keyIndicator" class="key-indicator key-none" onclick="showApiKeyModal()" title="Claude API 키 설정">🔑 키 미설정</span>
   </div>
 </header>
 
@@ -582,6 +620,7 @@ let allApis = [];
 let tossApps = {};
 let trendData = null;
 let basket = JSON.parse(localStorage.getItem('apiBasket') || '[]');
+let savedApiKey = localStorage.getItem('anthropicApiKey') || '';
 let currentView = 'dashboard';
 let currentCategory = null;
 let currentPage = 1;
@@ -617,25 +656,27 @@ const revenueMap = {
 
 async function loadData() {
   try {
-    // 1순위: <script>로 미리 로드된 전역 변수 (file:// 에서도 작동)
+    // 정적 JS 파일에서 API/Toss 데이터 로드
     if (window.__APIS__ && window.__TOSS__) {
       allApis = window.__APIS__;
       tossApps = window.__TOSS__;
-      if (window.__TRENDS__) trendData = window.__TRENDS__;
     } else {
-      // 2순위: fetch (서버 실행 시)
+      // fetch (서버 실행 시)
       const [apiRes, tossRes] = await Promise.all([
         fetch('./apis.json'),
         fetch('./toss.json')
       ]);
       allApis = await apiRes.json();
       tossApps = await tossRes.json();
-      try {
-        // Vercel: /api/trends 우선, 실패 시 정적 trends.json
-        let trendRes = await fetch('/api/trends').catch(() => null);
-        if (!trendRes || !trendRes.ok) trendRes = await fetch('./trends.json');
-        if (trendRes.ok) trendData = await trendRes.json();
-      } catch (e) {}
+    }
+    // 트렌드: 항상 서버에서 최신 데이터 우선 로드 (trends_data.js는 구버전일 수 있음)
+    try {
+      let trendRes = await fetch('/api/trends').catch(() => null);
+      if (!trendRes || !trendRes.ok) trendRes = await fetch('./trends.json').catch(() => null);
+      if (trendRes && trendRes.ok) trendData = await trendRes.json();
+      else if (window.__TRENDS__) trendData = window.__TRENDS__;
+    } catch (e) {
+      if (window.__TRENDS__) trendData = window.__TRENDS__;
     }
 
     document.getElementById('loading').style.display = 'none';
@@ -831,13 +872,18 @@ function renderIdeasSection() {
             ` : ''}
             ${idea.apis && idea.apis.length > 0 ? `
               <div class="ic-apis">
+                <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--text2)">📋 활용 공공데이터 API</div>
                 ${idea.apis.map(a =>
-                  `<span class="${(a.type||'') === 'REST' ? 'type-badge rest' : 'type-badge link'}" style="font-size:11px">${a.type||'API'}</span><span>${escHtml((a.name||'').length > 25 ? a.name.slice(0,25)+'...' : (a.name||''))}</span>`
+                  `<div style="margin-bottom:4px">
+                    <span class="${(a.type||'') === 'REST' ? 'type-badge rest' : 'type-badge link'}" style="font-size:11px">${a.type||'API'}</span>
+                    <span style="font-size:12px">${escHtml((a.name||'').length > 35 ? a.name.slice(0,35)+'...' : (a.name||''))}</span>
+                    <span style="font-size:11px;color:var(--text2)"> · ${escHtml(a.provider||'')} · DL ${(a.downloads||0).toLocaleString()}</span>
+                  </div>`
                 ).join('')}
+                <button class="ic-basket" onclick="event.stopPropagation(); addIdeaToBasket(${JSON.stringify(idea.apis || []).replace(/"/g, '&quot;')})">
+                  🛒 API 장바구니 담기
+                </button>
               </div>
-              <button class="ic-basket" onclick="event.stopPropagation(); addIdeaToBasket(${JSON.stringify(idea.apis || []).replace(/"/g, '&quot;')})">
-                🛒 담기
-              </button>
             ` : ''}
           </div>
         `).join('')}
@@ -1512,28 +1558,66 @@ function showToast(msg, type = 'success') {
 }
 
 async function refreshTrends(btn) {
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ 수집 중... (최대 2분)'; }
+  if (!savedApiKey) {
+    showApiKeyModal();
+    return;
+  }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ AI 분석 시작 중...'; }
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 130000);
-    const res = await fetch('/api/refresh-trends', { method: 'POST', signal: controller.signal });
-    clearTimeout(timeoutId);
+    const res = await fetch('/api/refresh-trends', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: savedApiKey }),
+    });
     const data = await res.json();
-    if (data.success) {
+    if (data.status === 'started' || data.status === 'running') {
+      showToast('AI 분석 중... 완료되면 자동으로 업데이트됩니다');
+      pollForNewTrends(btn, trendData?.generated_at);
+    } else if (data.success) {
+      // 구버전 서버 호환
       trendData = data.trends;
-      showToast(`${data.message}`);
+      showToast(data.message);
       showDashboard();
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
     } else {
       showToast(data.message || '실패', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
     }
   } catch (e) {
-    if (e.name === 'AbortError') {
-      showToast('수집 시간 초과. 잠시 후 다시 시도해주세요.', 'error');
-    } else {
-      showToast('서버 연결 실패. python server.py로 실행했는지 확인하세요.', 'error');
-    }
+    showToast('서버 연결 실패. python server.py로 실행했는지 확인하세요.', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
   }
-  if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
+}
+
+async function pollForNewTrends(btn, prevTime, attempt = 0) {
+  const MAX = 60; // 최대 5분 (5초 x 60)
+  if (attempt >= MAX) {
+    showToast('시간 초과. 페이지를 새로고침해주세요.', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
+    return;
+  }
+  await new Promise(r => setTimeout(r, 5000));
+  try {
+    const res = await fetch('/api/trends?' + Date.now());
+    if (!res.ok) { pollForNewTrends(btn, prevTime, attempt + 1); return; }
+    const data = await res.json();
+    if (data.generated_at && data.generated_at !== prevTime) {
+      trendData = data;
+      showToast(`✅ AI 분석 완료! ${data.total_ideas || 0}개 아이디어 업데이트됨`);
+      showDashboard();
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
+    } else {
+      // 상태 메시지 업데이트
+      const statusRes = await fetch('/api/refresh-status').catch(() => null);
+      if (statusRes && statusRes.ok) {
+        const s = await statusRes.json();
+        if (btn) btn.textContent = `⏳ ${s.message || '처리 중...'}`;
+      }
+      pollForNewTrends(btn, prevTime, attempt + 1);
+    }
+  } catch (e) {
+    pollForNewTrends(btn, prevTime, attempt + 1);
+  }
 }
 
 function toggleIdeaDetail(el) {
@@ -1553,7 +1637,65 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ── API Key ──────────────────────────────────────────────
+function updateKeyIndicator() {
+  const el = document.getElementById('keyIndicator');
+  if (!el) return;
+  if (savedApiKey) {
+    el.className = 'key-indicator key-ok';
+    el.textContent = '🔑 키 설정됨';
+  } else {
+    el.className = 'key-indicator key-none';
+    el.textContent = '🔑 키 미설정';
+  }
+}
+
+function showApiKeyModal() {
+  document.getElementById('apikeyModal').style.display = 'flex';
+  document.getElementById('apikeyInput').value = savedApiKey;
+  document.getElementById('apikeyInput').focus();
+}
+
+function closeApiKeyModal() {
+  document.getElementById('apikeyModal').style.display = 'none';
+}
+
+function saveApiKey() {
+  const key = document.getElementById('apikeyInput').value.trim();
+  if (key && !key.startsWith('sk-ant-')) {
+    showToast('올바른 Claude API 키가 아닙니다 (sk-ant-로 시작해야 함)', 'error');
+    return;
+  }
+  savedApiKey = key;
+  localStorage.setItem('anthropicApiKey', key);
+  updateKeyIndicator();
+  closeApiKeyModal();
+  showToast('✅ API 키가 저장되었습니다');
+}
+
+
+// ── Init ──────────────────────────────────────────────────
+updateKeyIndicator();
 loadData();
 </script>
+
+<!-- API Key Modal -->
+<div id="apikeyModal" class="apikey-modal-bg" style="display:none" onclick="if(event.target===this)closeApiKeyModal()">
+  <div class="apikey-modal">
+    <h3>🔑 API 키 설정</h3>
+    <p style="margin-bottom:12px">키는 이 브라우저에만 저장되며 외부로 전송되지 않습니다.</p>
+
+    <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Claude API 키 (아이디어 생성용)</div>
+    <input id="apikeyInput" type="password" placeholder="sk-ant-api03-..." style="margin-bottom:4px"/>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:16px">
+      발급: <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--accent)">console.anthropic.com</a>
+    </div>
+
+    <div class="apikey-modal-btns">
+      <button class="btn-cancel" onclick="closeApiKeyModal()">취소</button>
+      <button class="btn-save" onclick="saveApiKey()">저장</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
