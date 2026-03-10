@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공공데이터 & 토스앱 탐색기</title>
+<script src="apis_data.js"></script>
+<script src="toss_data.js"></script>
+<script src="trends_data.js"></script>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface2: #1a1a24;
+  --border: #2a2a3a;
+  --text: #e4e4ed;
+  --text2: #8888a0;
+  --accent: #3b82f6;
+  --accent2: #60a5fa;
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+  --orange: #f97316;
+  --purple: #a855f7;
+  --toss: #0064ff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Loading */
+#loading {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); z-index: 9999;
+  flex-direction: column; gap: 16px;
+}
+#loading .spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading p { color: var(--text2); font-size: 14px; }
+
+/* Header */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-inner {
+  max-width: 1400px; margin: 0 auto;
+  display: flex; align-items: center; height: 56px; gap: 24px;
+}
+.logo {
+  font-size: 18px; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  cursor: pointer; white-space: nowrap;
+}
+.search-box {
+  flex: 1; max-width: 500px; position: relative;
+}
+.search-box input {
+  width: 100%; padding: 8px 16px 8px 36px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size: 14px;
+  outline: none; transition: border-color 0.2s;
+}
+.search-box input:focus { border-color: var(--accent); }
+.search-box svg {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: var(--text2);
+}
+nav { display: flex; gap: 4px; }
+nav button {
+  padding: 8px 16px; border: none; background: transparent;
+  color: var(--text2); font-size: 13px; font-weight: 500;
+  border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+nav button:hover { background: var(--surface2); color: var(--text); }
+nav button.active { background: var(--accent); color: #fff; }
+
+/* Main */
+main {
+  max-width: 1400px; margin: 0 auto; padding: 24px;
+}
+
+/* Dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+.stat-card h3 { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+.stat-card .value { font-size: 32px; font-weight: 700; }
+.stat-card .sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* Opportunity Matrix */
+.matrix-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.matrix-table th {
+  background: var(--surface2); padding: 12px 16px;
+  text-align: left; font-size: 12px; color: var(--text2);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+.matrix-table td {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.matrix-table tr { cursor: pointer; transition: background 0.15s; }
+.matrix-table tbody tr:hover { background: var(--surface2); }
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 600;
+}
+.badge.hot { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge.warm { background: rgba(249,115,22,0.15); color: var(--orange); }
+.badge.cool { background: rgba(59,130,246,0.15); color: var(--accent2); }
+.badge.cold { background: rgba(136,136,160,0.15); color: var(--text2); }
+
+/* Category Page */
+.page-header {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.page-header h1 { font-size: 24px; font-weight: 700; }
+.page-header .count {
+  background: var(--surface2); padding: 4px 12px;
+  border-radius: 16px; font-size: 13px; color: var(--text2);
+}
+.back-btn {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); padding: 6px 12px; border-radius: 6px;
+  cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 4px;
+}
+.back-btn:hover { border-color: var(--accent); }
+
+/* Filter bar */
+.filter-bar {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-bar select, .filter-bar input {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); padding: 6px 12px; border-radius: 6px;
+  font-size: 13px; outline: none;
+}
+.filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+
+/* API Cards */
+.api-list { display: flex; flex-direction: column; gap: 8px; }
+.api-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  transition: all 0.2s; position: relative;
+}
+.api-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.api-card .api-name {
+  font-size: 15px; font-weight: 600; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer;
+}
+.api-card .api-desc {
+  font-size: 13px; color: var(--text2); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; margin-bottom: 8px; cursor: pointer;
+}
+.api-card .api-meta {
+  display: flex; gap: 16px; font-size: 12px; color: var(--text2);
+  flex-wrap: wrap;
+}
+.api-card .api-meta span { display: flex; align-items: center; gap: 4px; }
+.type-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 6px;
+  border-radius: 4px;
+}
+.type-badge.rest { background: rgba(34,197,94,0.15); color: var(--green); }
+.type-badge.link { background: rgba(168,85,247,0.15); color: var(--purple); }
+
+/* Basket button on card */
+.basket-btn {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text2); width: 32px; height: 32px;
+  border-radius: 6px; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.basket-btn:hover { border-color: var(--accent); color: var(--accent); }
+.basket-btn.in-basket { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* API Detail Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; max-width: 700px; width: 100%;
+  max-height: 80vh; overflow-y: auto; padding: 32px;
+}
+.modal h2 { font-size: 20px; margin-bottom: 16px; padding-right: 40px; }
+.modal .detail-row {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.modal .detail-row .label {
+  min-width: 100px; color: var(--text2); font-weight: 500;
+}
+.modal .detail-row .value { flex: 1; }
+.modal .detail-row a { color: var(--accent2); text-decoration: none; }
+.modal .detail-row a:hover { text-decoration: underline; }
+.modal-close {
+  float: right; background: none; border: none; color: var(--text2);
+  font-size: 24px; cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+.modal-basket-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px; padding: 10px 20px;
+  background: var(--accent); border: none; color: #fff;
+  border-radius: 8px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+}
+.modal-basket-btn:hover { background: #2563eb; }
+.modal-basket-btn.in-basket { background: var(--red); }
+
+/* Toss Apps */
+.toss-category {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+}
+.toss-category-header {
+  padding: 16px 20px; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer;
+  transition: background 0.15s;
+}
+.toss-category-header:hover { background: var(--surface2); }
+.toss-category-header h3 { font-size: 15px; font-weight: 600; }
+.toss-category-header .cnt {
+  background: var(--toss); color: #fff; padding: 2px 10px;
+  border-radius: 10px; font-size: 12px; font-weight: 700;
+}
+.toss-apps-list {
+  padding: 0 20px 16px; display: none;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px;
+}
+.toss-apps-list.open { display: grid; }
+.toss-app-item {
+  padding: 10px 12px; background: var(--surface2);
+  border-radius: 8px; font-size: 13px;
+}
+.toss-app-item .app-name { font-weight: 600; margin-bottom: 2px; }
+.toss-app-item .app-desc { color: var(--text2); font-size: 12px; }
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; margin-top: 24px;
+}
+.pagination button {
+  padding: 6px 12px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 13px; cursor: pointer;
+}
+.pagination button:hover { border-color: var(--accent); }
+.pagination button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pagination button:disabled { opacity: 0.3; cursor: default; }
+.pagination .page-info { font-size: 13px; color: var(--text2); margin: 0 8px; }
+
+/* Section title */
+.section-title {
+  font-size: 18px; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title .line {
+  flex: 1; height: 1px; background: var(--border);
+}
+
+/* Basket Panel */
+.basket-floating {
+  position: fixed; bottom: 24px; right: 24px; z-index: 150;
+}
+.basket-toggle {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--accent); border: none; color: #fff;
+  font-size: 22px; cursor: pointer; box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+  position: relative; transition: transform 0.2s;
+}
+.basket-toggle:hover { transform: scale(1.1); }
+.basket-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: var(--red); color: #fff; font-size: 11px;
+  font-weight: 700; min-width: 20px; height: 20px;
+  border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; padding: 0 4px;
+}
+.basket-panel {
+  display: none; position: absolute; bottom: 64px; right: 0;
+  width: 420px; max-height: 70vh; overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  padding: 20px;
+}
+.basket-panel.open { display: block; }
+.basket-panel h3 { font-size: 16px; margin-bottom: 4px; }
+.basket-panel .basket-sub { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+.basket-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; background: var(--surface2); border-radius: 8px;
+  margin-bottom: 6px; font-size: 13px;
+}
+.basket-item .bi-info { flex: 1; min-width: 0; }
+.basket-item .bi-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.basket-item .bi-cat { font-size: 11px; color: var(--text2); }
+.basket-item .bi-remove {
+  background: none; border: none; color: var(--text2);
+  cursor: pointer; font-size: 16px; padding: 4px;
+}
+.basket-item .bi-remove:hover { color: var(--red); }
+.basket-empty { color: var(--text2); text-align: center; padding: 24px; font-size: 13px; }
+.basket-actions {
+  display: flex; gap: 8px; margin-top: 12px;
+}
+.basket-actions button {
+  flex: 1; padding: 10px; border-radius: 8px; font-size: 13px;
+  font-weight: 600; cursor: pointer; border: none;
+}
+.btn-idea { background: var(--accent); color: #fff; }
+.btn-idea:hover { background: #2563eb; }
+.btn-clear { background: var(--surface2); color: var(--text2); border: 1px solid var(--border) !important; }
+.btn-clear:hover { color: var(--red); }
+.btn-export { background: var(--green); color: #fff; }
+.btn-export:hover { background: #16a34a; }
+
+/* Idea panel */
+.idea-panel {
+  margin-top: 16px; padding: 16px; background: var(--surface2);
+  border-radius: 10px; border: 1px solid var(--border);
+}
+.idea-panel h4 { font-size: 14px; margin-bottom: 8px; }
+.idea-panel .idea-cats {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.idea-panel .idea-cats span {
+  padding: 3px 8px; background: var(--surface); border-radius: 6px;
+  font-size: 11px; color: var(--accent2);
+}
+.idea-panel .idea-suggest {
+  font-size: 13px; color: var(--text); line-height: 1.6;
+}
+.idea-panel .idea-suggest li { margin-bottom: 6px; }
+
+/* Related toss section in category */
+.related-toss-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; margin-bottom: 16px;
+}
+.related-toss-section .rt-header {
+  font-size: 13px; color: var(--text2); margin-bottom: 10px;
+}
+.related-toss-group {
+  margin-bottom: 10px;
+}
+.related-toss-group .rtg-label {
+  font-size: 12px; color: var(--toss); font-weight: 600; margin-bottom: 6px;
+}
+.related-toss-group .rtg-apps {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.related-toss-group .rtg-apps span {
+  background: var(--surface2); padding: 3px 10px; border-radius: 6px; font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-inner { flex-wrap: wrap; height: auto; padding: 12px 0; }
+  .search-box { max-width: 100%; order: 3; width: 100%; }
+  nav { overflow-x: auto; }
+  .dashboard-grid { grid-template-columns: 1fr 1fr; }
+  main { padding: 16px; }
+  .basket-panel { width: 320px; }
+}
+@media (max-width: 480px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .basket-panel { width: calc(100vw - 48px); }
+}
+
+/* Idea Cards */
+.idea-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.idea-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.idea-card.trend { border-left: 3px solid var(--red); }
+.idea-card.smart { border-left: 3px solid var(--accent); }
+.idea-card.random { border-left: 3px solid var(--purple); }
+.idea-card .ic-type {
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 4px; display: inline-block; margin-bottom: 8px;
+}
+.idea-card .ic-type.trend { background: rgba(239,68,68,0.15); color: var(--red); }
+.idea-card .ic-type.smart { background: rgba(59,130,246,0.15); color: var(--accent2); }
+.idea-card .ic-type.random { background: rgba(168,85,247,0.15); color: var(--purple); }
+.idea-card .ic-name { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.idea-card .ic-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+.idea-card .ic-apis {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;
+}
+.idea-card .ic-apis span {
+  font-size: 11px; padding: 3px 8px; border-radius: 4px;
+  background: var(--surface2);
+}
+.idea-card .ic-meta {
+  display: flex; gap: 12px; font-size: 11px; color: var(--text2);
+  flex-wrap: wrap; align-items: center;
+}
+.idea-card .ic-meta .feasibility {
+  padding: 2px 6px; border-radius: 4px; font-weight: 600;
+}
+.feasibility.high { background: rgba(34,197,94,0.15); color: var(--green); }
+.feasibility.medium { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.feasibility.low { background: rgba(239,68,68,0.15); color: var(--red); }
+.idea-card .ic-news {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text2);
+}
+.idea-card .ic-news div { margin-bottom: 3px; }
+.idea-card .ic-basket {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--accent); color: #fff; border: none;
+  padding: 6px 12px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; cursor: pointer; transition: background 0.2s;
+}
+.idea-card .ic-basket:hover { background: #2563eb; }
+.ideas-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.trend-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+}
+.trend-header .th-info { font-size: 12px; color: var(--text2); }
+.trend-keywords {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.trend-keywords span {
+  padding: 4px 10px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; font-size: 12px;
+}
+.trend-keywords span strong { color: var(--accent2); }
+.refresh-btn {
+  padding: 8px 16px; background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); border-radius: 6px; cursor: pointer; font-size: 13px;
+}
+.refresh-btn:hover { border-color: var(--accent); }
+.no-trends {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 40px; text-align: center; margin-bottom: 32px;
+}
+.no-trends h3 { margin-bottom: 8px; }
+.no-trends p { color: var(--text2); font-size: 13px; margin-bottom: 16px; }
+.no-trends code {
+  display: block; background: var(--surface2); padding: 12px 16px;
+  border-radius: 8px; font-size: 13px; color: var(--accent2);
+  max-width: 400px; margin: 0 auto;
+}
+
+
+/* Toast notification */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 24px; border-radius: 10px; font-size: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 300;
+  animation: toastIn 0.3s ease;
+}
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+@keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(20px); } }
+
+/* App list */
+.app-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 16px;
+}
+.app-card .app-num {
+  font-size: 24px; font-weight: 800; color: var(--accent);
+  min-width: 48px; text-align: center;
+}
+.app-card .app-info { flex: 1; }
+.app-card .app-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.app-card .app-info p { font-size: 13px; color: var(--text2); }
+.app-card .app-badges { display: flex; gap: 6px; }
+.app-card .app-badges span {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+}
+
+/* Refresh button */
+.refresh-trends-btn {
+  padding: 8px 20px; background: var(--accent); border: none;
+  color: #fff; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+}
+.refresh-trends-btn:hover { background: #2563eb; }
+.refresh-trends-btn:disabled { opacity: 0.5; cursor: wait; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p>데이터 로딩 중... (12,000+ API)</p>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" onclick="showDashboard()">API 탐색기</div>
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="globalSearch" placeholder="API 이름, 키워드, 제공기관 검색..." oninput="handleSearch(this.value)">
+    </div>
+    <nav>
+      <button id="navDash" class="active" onclick="showDashboard()">대시보드</button>
+      <button id="navCat" onclick="showCategories()">카테고리</button>
+      <button id="navToss" onclick="showTossApps()">토스 앱</button>
+      <button id="navBasket" onclick="showBasketPage()">장바구니</button>
+    </nav>
+  </div>
+</header>
+
+<main id="content"></main>
+
+<!-- Basket Floating Button -->
+<div class="basket-floating">
+  <button class="basket-toggle" onclick="toggleBasketPanel()" title="API 장바구니">
+    🛒
+    <span class="basket-badge" id="basketCount" style="display:none">0</span>
+  </button>
+  <div class="basket-panel" id="basketPanel"></div>
+</div>
+
+<script>
+let allApis = [];
+let tossApps = {};
+let trendData = null;
+let basket = JSON.parse(localStorage.getItem('apiBasket') || '[]');
+let currentView = 'dashboard';
+let currentCategory = null;
+let currentPage = 1;
+const PAGE_SIZE = 50;
+
+// [FIX #2] Category mapping: 1:many (toss is now an array)
+const categoryMap = {
+  '재정금융': { icon: '💰', color: '#22c55e', toss: ['금융/투자/재테크', '생활/편의', '쇼핑/리뷰/혜택'] },
+  '보건의료': { icon: '🏥', color: '#ef4444', toss: ['건강/운동/의료', '생활/편의', '날씨/환경/생활정보'] },
+  '식품건강': { icon: '🍽️', color: '#f97316', toss: ['건강/운동/의료', '쇼핑/리뷰/혜택', '생활/편의'] },
+  '교통물류': { icon: '🚗', color: '#3b82f6', toss: ['교통/이동/여행', '생활/편의', '여행/관광/맛집'] },
+  '교육': { icon: '📚', color: '#a855f7', toss: ['교육/학습/시험', '생활/편의'] },
+  '문화관광': { icon: '🎭', color: '#ec4899', toss: ['여행/관광/맛집', '문화/예술/엔터', '생활/편의'] },
+  '환경기상': { icon: '🌤️', color: '#06b6d4', toss: ['날씨/환경/생활정보', '생활/편의'] },
+  '국토관리': { icon: '🏗️', color: '#84cc16', toss: ['부동산/주거', '생활/편의', '금융/투자/재테크'] },
+  '재난안전': { icon: '🚨', color: '#dc2626', toss: ['날씨/환경/생활정보', '생활/편의', '교통/이동/여행'] },
+  '산업고용': { icon: '🏭', color: '#f59e0b', toss: ['일자리/커리어', '생활/편의', '교육/학습/시험'] },
+  '사회복지': { icon: '🤝', color: '#10b981', toss: ['정부/공공서비스', '금융/투자/재테크', '생활/편의'] },
+  '농축수산': { icon: '🌾', color: '#65a30d', toss: ['생활/편의', '쇼핑/리뷰/혜택', '건강/운동/의료'] },
+  '공공행정': { icon: '🏛️', color: '#6366f1', toss: ['정부/공공서비스', '생활/편의'] },
+  '과학기술': { icon: '🔬', color: '#8b5cf6', toss: ['교육/학습/시험', '생활/편의'] },
+  '통일외교안보': { icon: '🌏', color: '#0ea5e9', toss: ['정부/공공서비스'] },
+  '법률': { icon: '⚖️', color: '#78716c', toss: ['정부/공공서비스', '생활/편의', '금융/투자/재테크'] }
+};
+
+// Revenue potential by category
+const revenueMap = {
+  '재정금융': '최상', '국토관리': '상', '보건의료': '상', '교육': '중상',
+  '식품건강': '중상', '교통물류': '중상', '문화관광': '중', '산업고용': '중',
+  '공공행정': '중', '사회복지': '중', '농축수산': '중', '환경기상': '중하',
+  '재난안전': '중하', '법률': '중하', '과학기술': '하', '통일외교안보': '최하'
+};
+
+async function loadData() {
+  try {
+    // 1순위: <script>로 미리 로드된 전역 변수 (file:// 에서도 작동)
+    if (window.__APIS__ && window.__TOSS__) {
+      allApis = window.__APIS__;
+      tossApps = window.__TOSS__;
+      if (window.__TRENDS__) trendData = window.__TRENDS__;
+    } else {
+      // 2순위: fetch (서버 실행 시)
+      const [apiRes, tossRes] = await Promise.all([
+        fetch('./apis.json'),
+        fetch('./toss.json')
+      ]);
+      allApis = await apiRes.json();
+      tossApps = await tossRes.json();
+      try {
+        const trendRes = await fetch('./trends.json');
+        if (trendRes.ok) trendData = await trendRes.json();
+      } catch (e) {}
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    updateBasketUI();
+    showDashboard();
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      `<p style="color:var(--red)">데이터 로딩 실패</p>
+       <p style="color:var(--text2);font-size:13px;max-width:400px;text-align:center">
+       apis_data.js, toss_data.js 파일이 같은 폴더에 있는지 확인하세요.</p>`;
+  }
+}
+
+// [FIX #1] Calculate opportunity from actual data (no hardcoding)
+function buildOpportunities() {
+  const apiCounts = {};
+  allApis.forEach(a => {
+    apiCounts[a.category_main] = (apiCounts[a.category_main] || 0) + 1;
+  });
+
+  // Count toss apps for each API category (using 1:many mapping, deduplicate)
+  const tossCounts = {};
+  Object.keys(categoryMap).forEach(cat => {
+    const tossKeys = categoryMap[cat].toss;
+    const seen = new Set();
+    tossKeys.forEach(key => {
+      (tossApps[key] || []).forEach(app => {
+        seen.add(app.name);
+      });
+    });
+    tossCounts[cat] = seen.size;
+  });
+
+  return Object.keys(categoryMap).map(cat => {
+    const apis = apiCounts[cat] || 0;
+    const toss = tossCounts[cat] || 0;
+    const ratio = toss > 0 ? (apis / toss) : apis;
+    let level = 0;
+    if (ratio >= 30) level = 3;
+    else if (ratio >= 15) level = 2;
+    else if (ratio >= 5) level = 1;
+    return {
+      cat, apis, toss, ratio: ratio.toFixed(1),
+      level, revenue: revenueMap[cat] || '중'
+    };
+  }).sort((a, b) => b.ratio - a.ratio);
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+function showDashboard() {
+  currentView = 'dashboard';
+  currentCategory = null;
+  setActiveNav('navDash');
+  document.getElementById('globalSearch').value = '';
+
+  const opportunities = buildOpportunities();
+  const totalApis = allApis.length;
+  const restCount = allApis.filter(a => a.api_type === 'REST').length;
+  const linkCount = totalApis - restCount;
+  const totalToss = Object.values(tossApps).reduce((s, arr) => s + arr.length, 0);
+  const catCount = Object.keys(categoryMap).length;
+
+  let html = `
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <h3>총 공공 API</h3>
+        <div class="value" style="color:var(--accent2)">${totalApis.toLocaleString()}</div>
+        <div class="sub">REST ${restCount.toLocaleString()} / LINK ${linkCount.toLocaleString()}</div>
+      </div>
+      <div class="stat-card">
+        <h3>토스 앱 현황</h3>
+        <div class="value" style="color:var(--toss)">${totalToss.toLocaleString()}</div>
+        <div class="sub">${Object.keys(tossApps).length}개 카테고리</div>
+      </div>
+      <div class="stat-card">
+        <h3>장바구니</h3>
+        <div class="value" style="color:var(--green)">${basket.length}</div>
+        <div class="sub">${basket.length > 0 ? new Set(basket.map(b=>b.category_main)).size + '개 카테고리 조합' : 'API를 담아보세요'}</div>
+      </div>
+      <div class="stat-card">
+        <h3>최고 기회 분야</h3>
+        <div class="value" style="color:var(--red);font-size:22px">${opportunities[0]?.cat || '-'}</div>
+        <div class="sub">API:앱 비율 ${opportunities[0]?.ratio}:1</div>
+      </div>
+    </div>
+
+    <div class="section-title">기회 매트릭스 (API:토스앱 비율) — 실시간 계산<span class="line"></span></div>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>카테고리</th>
+          <th>공공 API</th>
+          <th>관련 토스 앱</th>
+          <th>비율</th>
+          <th>기회도</th>
+          <th>수익 잠재력</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${opportunities.map(o => {
+          const m = categoryMap[o.cat];
+          const lvl = o.level >= 3 ? 'hot' : o.level >= 2 ? 'warm' : o.level >= 1 ? 'cool' : 'cold';
+          const fire = o.level >= 3 ? '🔥🔥🔥' : o.level >= 2 ? '🔥🔥' : o.level >= 1 ? '🔥' : '';
+          return `<tr onclick="openCategory('${o.cat}')">
+            <td>${m?.icon || ''}</td>
+            <td><strong>${o.cat}</strong></td>
+            <td>${o.apis.toLocaleString()}</td>
+            <td>${o.toss}</td>
+            <td><strong>${o.ratio}:1</strong></td>
+            <td><span class="badge ${lvl}">${fire || '보통'}</span></td>
+            <td>${o.revenue}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+
+    ${renderIdeasSection()}
+  `;
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderIdeasSection() {
+  if (!trendData) {
+    return `
+      <div style="margin-top:32px">
+        <div class="section-title">💡 오늘의 앱 아이디어<span class="line"></span></div>
+        <div class="no-trends">
+          <h3>트렌드 데이터가 아직 없습니다</h3>
+          <p>아래 명령어를 실행하면 뉴스 트렌드를 분석해서 앱 아이디어를 자동 생성합니다</p>
+          <code>cd "공통 데이터/웹탐색기"<br>python fetch_trends.py</code>
+          <p style="margin-top:12px;font-size:12px">또는 아래 버튼을 클릭하세요</p>
+          <button class="refresh-trends-btn" onclick="refreshTrends(this)" style="margin-top:12px">
+            🔄 트렌드 수집 시작
+          </button>
+        </div>
+      </div>`;
+  }
+
+  const { ideas, generated_at, news_count, top_keywords, top_categories } = trendData;
+  const allIdeas = [
+    ...(ideas.trend || []),
+    ...(ideas.smart || []),
+    ...(ideas.random || []),
+  ];
+
+  const feasLabel = { high: '바로 개발 가능', medium: '보통', low: '난이도 높음' };
+  const sustLabel = { high: '지속형', medium: '중기', low: '단기', unknown: '미지수' };
+  const typeLabel = { trend: '🔥 트렌드', smart: '🧠 스마트 조합', random: '🎲 랜덤 발견' };
+
+  return `
+    <div style="margin-top:32px">
+      <div class="trend-header">
+        <div class="section-title" style="margin-bottom:0">💡 오늘의 앱 아이디어 (${allIdeas.length}개)<span class="line"></span></div>
+        <div class="th-info" style="display:flex;align-items:center;gap:12px">
+          생성: ${generated_at} | 뉴스 ${news_count}건 분석
+          <button class="refresh-trends-btn" onclick="refreshTrends(this)" style="padding:6px 14px;font-size:12px">
+            🔄 새로고침
+          </button>
+        </div>
+      </div>
+
+      ${top_keywords && top_keywords.length > 0 ? `
+        <div class="trend-keywords">
+          <span style="color:var(--text2);border:none;padding-left:0">트렌드 키워드:</span>
+          ${top_keywords.slice(0, 12).map(k =>
+            `<span><strong>${k.keyword}</strong> ${k.count}</span>`
+          ).join('')}
+        </div>
+      ` : ''}
+
+      <div class="ideas-grid">
+        ${allIdeas.map(idea => `
+          <div class="idea-card ${idea.type}">
+            <button class="ic-basket" onclick="addIdeaToBasket(${JSON.stringify(idea.apis || []).replace(/"/g, '&quot;')})">
+              🛒 담기
+            </button>
+            <span class="ic-type ${idea.type}">${typeLabel[idea.type] || idea.type}</span>
+            <div class="ic-name">${escHtml(idea.name)}</div>
+            <div class="ic-desc">${escHtml(idea.description)}</div>
+            <div class="ic-apis">
+              ${(idea.apis || []).map(a =>
+                `<span class="${a.type === 'REST' ? 'type-badge rest' : 'type-badge link'}" style="font-size:11px">${a.type}</span><span>${escHtml(a.name.length > 25 ? a.name.slice(0,25)+'...' : a.name)}</span>`
+              ).join('')}
+            </div>
+            <div class="ic-meta">
+              ${idea.categories.map(c => `<span>${categoryMap[c]?.icon || ''} ${c}</span>`).join(' ')}
+              <span class="feasibility ${idea.feasibility}">${feasLabel[idea.feasibility] || '?'}</span>
+              <span>경쟁 ${idea.competitors || 0}개</span>
+              <span>지속성: ${sustLabel[idea.sustainability] || '?'}</span>
+            </div>
+            ${idea.related_news && idea.related_news.length > 0 ? `
+              <div class="ic-news">
+                <div style="font-weight:600;margin-bottom:4px">📰 관련 뉴스:</div>
+                ${idea.related_news.slice(0, 2).map(n => `<div>· ${escHtml(n)}</div>`).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function addIdeaToBasket(apis) {
+  if (!apis || apis.length === 0) return;
+  let added = 0;
+  apis.forEach(a => {
+    if (!basket.some(b => b.id === a.id)) {
+      const full = allApis.find(x => x.id === a.id);
+      if (full) {
+        basket.push({
+          id: full.id, name: full.name,
+          category_main: full.category_main,
+          provider: full.provider,
+          api_type: full.api_type,
+          downloads: full.downloads,
+          keywords: full.keywords || '',
+          description: (full.description || '').slice(0, 200)
+        });
+        added++;
+      }
+    }
+  });
+  if (added > 0) {
+    saveBasket();
+    updateBasketUI();
+    alert(added + '개 API를 장바구니에 담았습니다!');
+  } else {
+    alert('이미 모두 장바구니에 있습니다');
+  }
+}
+
+function showCategories() {
+  currentView = 'categories';
+  setActiveNav('navCat');
+
+  const catCounts = {};
+  allApis.forEach(a => {
+    catCounts[a.category_main] = (catCounts[a.category_main] || 0) + 1;
+  });
+
+  let html = `<div class="section-title">카테고리별 공공 API<span class="line"></span></div>
+    <div class="dashboard-grid">
+      ${Object.entries(categoryMap).map(([cat, info]) => {
+        const cnt = catCounts[cat] || 0;
+        return `<div class="stat-card" style="cursor:pointer;border-left:3px solid ${info.color}" onclick="openCategory('${cat}')">
+          <h3>${info.icon} ${cat}</h3>
+          <div class="value" style="font-size:24px">${cnt.toLocaleString()}</div>
+          <div class="sub">관련 토스 카테고리: ${info.toss.length}개 →</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  document.getElementById('content').innerHTML = html;
+}
+
+function openCategory(cat) {
+  currentCategory = cat;
+  currentPage = 1;
+  currentView = 'category-detail';
+  setActiveNav('navCat');
+  renderCategoryPage();
+}
+
+function renderCategoryPage() {
+  const cat = currentCategory;
+  const m = categoryMap[cat];
+  let filtered = allApis.filter(a => a.category_main === cat);
+
+  const sortBy = document.getElementById('sortSelect')?.value || 'downloads';
+  const typeFilter = document.getElementById('typeSelect')?.value || 'all';
+  const localSearch = document.getElementById('localSearch')?.value || '';
+
+  if (typeFilter !== 'all') {
+    filtered = filtered.filter(a => a.api_type === typeFilter);
+  }
+  if (localSearch) {
+    const q = localSearch.toLowerCase();
+    filtered = filtered.filter(a =>
+      a.name.toLowerCase().includes(q) ||
+      (a.keywords || '').toLowerCase().includes(q) ||
+      (a.provider || '').toLowerCase().includes(q) ||
+      (a.description || '').toLowerCase().includes(q)
+    );
+  }
+
+  if (sortBy === 'downloads') filtered.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+  else if (sortBy === 'views') filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+  else if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+  // [FIX #2] Get related toss apps from ALL mapped categories
+  const tossKeys = m?.toss || [];
+  let relatedHtml = '';
+  if (tossKeys.length > 0) {
+    const groups = tossKeys.map(key => {
+      const apps = tossApps[key] || [];
+      if (apps.length === 0) return '';
+      return `<div class="related-toss-group">
+        <div class="rtg-label">${key} (${apps.length}개)</div>
+        <div class="rtg-apps">
+          ${apps.slice(0, 15).map(a =>
+            `<span title="${escHtml(a.desc)}">${escHtml(a.name)}</span>`
+          ).join('')}
+          ${apps.length > 15 ? `<span style="color:var(--text2)">+${apps.length - 15}개</span>` : ''}
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+
+    const totalRelated = tossKeys.reduce((s, k) => s + (tossApps[k] || []).length, 0);
+    relatedHtml = `<div class="related-toss-section">
+      <div class="rt-header">관련 토스 앱 (${tossKeys.length}개 카테고리, 총 ${totalRelated}개 앱)</div>
+      ${groups}
+    </div>`;
+  }
+
+  let html = `
+    <div class="page-header">
+      <button class="back-btn" onclick="showDashboard()">← 뒤로</button>
+      <h1>${m?.icon || ''} ${cat}</h1>
+      <span class="count">${filtered.length.toLocaleString()}개 API</span>
+    </div>
+
+    ${relatedHtml}
+
+    <div class="filter-bar">
+      <select id="sortSelect" onchange="renderCategoryPage()">
+        <option value="downloads" ${sortBy==='downloads'?'selected':''}>다운로드순</option>
+        <option value="views" ${sortBy==='views'?'selected':''}>조회순</option>
+        <option value="name" ${sortBy==='name'?'selected':''}>이름순</option>
+      </select>
+      <select id="typeSelect" onchange="currentPage=1;renderCategoryPage()">
+        <option value="all" ${typeFilter==='all'?'selected':''}>전체 타입</option>
+        <option value="REST" ${typeFilter==='REST'?'selected':''}>REST</option>
+        <option value="LINK" ${typeFilter==='LINK'?'selected':''}>LINK</option>
+      </select>
+      <input type="text" id="localSearch" placeholder="카테고리 내 검색..." value="${localSearch}" oninput="currentPage=1;renderCategoryPage()">
+    </div>
+
+    <div class="api-list">
+      ${pageItems.map(a => renderApiCard(a)).join('')}
+    </div>
+
+    ${renderPagination(totalPages)}
+  `;
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderApiCard(a) {
+  const typeClass = (a.api_type || '').toLowerCase().includes('rest') ? 'rest' : 'link';
+  const inBasket = basket.some(b => b.id === a.id);
+  return `<div class="api-card">
+    <button class="basket-btn ${inBasket ? 'in-basket' : ''}" onclick="event.stopPropagation();toggleBasket('${a.id}')" title="${inBasket ? '장바구니에서 제거' : '장바구니에 담기'}">
+      ${inBasket ? '✓' : '+'}
+    </button>
+    <div class="api-name" onclick="showApiDetail('${a.id}')">
+      <span class="type-badge ${typeClass}">${a.api_type || '?'}</span>
+      ${escHtml(a.name)}
+    </div>
+    <div class="api-desc" onclick="showApiDetail('${a.id}')">${escHtml(a.description || '')}</div>
+    <div class="api-meta">
+      <span>📥 ${(a.downloads || 0).toLocaleString()}</span>
+      <span>👀 ${(a.views || 0).toLocaleString()}</span>
+      <span>🏢 ${escHtml(a.provider || '')}</span>
+      ${a.format ? `<span>📄 ${a.format}</span>` : ''}
+      ${a.update_cycle && a.update_cycle !== '-' ? `<span>🔄 ${a.update_cycle}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderPagination(totalPages) {
+  if (totalPages <= 1) return '';
+  let btns = '';
+  btns += `<button ${currentPage <= 1 ? 'disabled' : ''} onclick="currentPage--;renderCategoryPage()">←</button>`;
+
+  const start = Math.max(1, currentPage - 3);
+  const end = Math.min(totalPages, currentPage + 3);
+  if (start > 1) btns += `<button onclick="currentPage=1;renderCategoryPage()">1</button>`;
+  if (start > 2) btns += `<span style="color:var(--text2)">...</span>`;
+
+  for (let i = start; i <= end; i++) {
+    btns += `<button class="${i === currentPage ? 'active' : ''}" onclick="currentPage=${i};renderCategoryPage()">${i}</button>`;
+  }
+
+  if (end < totalPages - 1) btns += `<span style="color:var(--text2)">...</span>`;
+  if (end < totalPages) btns += `<button onclick="currentPage=${totalPages};renderCategoryPage()">${totalPages}</button>`;
+  btns += `<button ${currentPage >= totalPages ? 'disabled' : ''} onclick="currentPage++;renderCategoryPage()">→</button>`;
+  btns += `<span class="page-info">${currentPage} / ${totalPages}</span>`;
+
+  return `<div class="pagination">${btns}</div>`;
+}
+
+function showApiDetail(id) {
+  const a = allApis.find(x => x.id === id);
+  if (!a) return;
+  const inBasket = basket.some(b => b.id === a.id);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+      <h2>${escHtml(a.name)}</h2>
+      <div class="detail-row"><span class="label">ID</span><span class="value">${a.id}</span></div>
+      <div class="detail-row"><span class="label">제공기관</span><span class="value">${escHtml(a.provider || '-')}</span></div>
+      <div class="detail-row"><span class="label">카테고리</span><span class="value">${a.category_main} > ${a.category_sub || '-'}</span></div>
+      <div class="detail-row"><span class="label">API 유형</span><span class="value"><span class="type-badge ${(a.api_type||'').toLowerCase().includes('rest')?'rest':'link'}">${a.api_type}</span></span></div>
+      <div class="detail-row"><span class="label">데이터 형식</span><span class="value">${a.format || '-'}</span></div>
+      <div class="detail-row"><span class="label">다운로드</span><span class="value">${(a.downloads||0).toLocaleString()}</span></div>
+      <div class="detail-row"><span class="label">조회수</span><span class="value">${(a.views||0).toLocaleString()}</span></div>
+      <div class="detail-row"><span class="label">갱신주기</span><span class="value">${a.update_cycle || '-'}</span></div>
+      <div class="detail-row"><span class="label">트래픽</span><span class="value">${a.traffic || '-'}</span></div>
+      <div class="detail-row"><span class="label">키워드</span><span class="value">${escHtml(a.keywords || '-')}</span></div>
+      <div class="detail-row"><span class="label">설명</span><span class="value" style="white-space:pre-wrap;line-height:1.6">${escHtml(a.description || '-')}</span></div>
+      <div class="detail-row"><span class="label">링크</span><span class="value"><a href="${a.url}" target="_blank">${a.url || '-'}</a></span></div>
+      <button class="modal-basket-btn ${inBasket ? 'in-basket' : ''}" onclick="toggleBasket('${a.id}');this.closest('.modal-overlay').remove();if(currentView==='category-detail')renderCategoryPage();">
+        ${inBasket ? '🗑️ 장바구니에서 제거' : '🛒 장바구니에 담기'}
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+// ===== [FIX #3] Basket / Cart System =====
+function toggleBasket(id) {
+  const idx = basket.findIndex(b => b.id === id);
+  if (idx >= 0) {
+    basket.splice(idx, 1);
+  } else {
+    const api = allApis.find(a => a.id === id);
+    if (api) {
+      basket.push({
+        id: api.id, name: api.name,
+        category_main: api.category_main,
+        provider: api.provider,
+        api_type: api.api_type,
+        downloads: api.downloads,
+        keywords: api.keywords || '',
+        description: (api.description || '').slice(0, 200)
+      });
+    }
+  }
+  saveBasket();
+  updateBasketUI();
+  // Re-render current view to update basket buttons
+  if (currentView === 'category-detail') renderCategoryPage();
+  else if (currentView === 'search') handleSearch(document.getElementById('globalSearch').value);
+  else if (currentView === 'basket-page') showBasketPage();
+}
+
+function saveBasket() {
+  localStorage.setItem('apiBasket', JSON.stringify(basket));
+}
+
+function updateBasketUI() {
+  const badge = document.getElementById('basketCount');
+  if (basket.length > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = basket.length;
+  } else {
+    badge.style.display = 'none';
+  }
+  renderBasketPanel();
+}
+
+function toggleBasketPanel() {
+  const panel = document.getElementById('basketPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderBasketPanel();
+}
+
+function renderBasketPanel() {
+  const panel = document.getElementById('basketPanel');
+  if (basket.length === 0) {
+    panel.innerHTML = `<h3>🛒 API 장바구니</h3>
+      <div class="basket-sub">서핑하면서 마음에 드는 API를 담아보세요</div>
+      <div class="basket-empty">아직 담은 API가 없습니다<br>API 카드의 + 버튼을 눌러보세요</div>`;
+    return;
+  }
+
+  const cats = [...new Set(basket.map(b => b.category_main))];
+
+  panel.innerHTML = `
+    <h3>🛒 API 장바구니 (${basket.length}개)</h3>
+    <div class="basket-sub">${cats.length}개 카테고리 크로스 조합</div>
+    ${basket.map(b => `
+      <div class="basket-item">
+        <div class="bi-info">
+          <div class="bi-name">${escHtml(b.name)}</div>
+          <div class="bi-cat">${b.category_main} · ${b.provider || ''}</div>
+        </div>
+        <button class="bi-remove" onclick="event.stopPropagation();toggleBasket('${b.id}')">&times;</button>
+      </div>
+    `).join('')}
+    <div class="basket-actions">
+      <button class="btn-idea" onclick="showIdeaFromBasket()">💡 앱 아이디어</button>
+      <button class="btn-export" onclick="exportBasket()">📋 복사</button>
+      <button class="btn-clear" onclick="clearBasket()">비우기</button>
+    </div>
+    <div id="ideaResult"></div>
+  `;
+}
+
+function clearBasket() {
+  basket = [];
+  saveBasket();
+  updateBasketUI();
+  if (currentView === 'category-detail') renderCategoryPage();
+  if (currentView === 'basket-page') showBasketPage();
+}
+
+function exportBasket() {
+  if (basket.length === 0) return;
+  const cats = [...new Set(basket.map(b => b.category_main))];
+  let text = `=== API 조합 (${basket.length}개, ${cats.length}개 카테고리) ===\n\n`;
+  basket.forEach((b, i) => {
+    text += `${i+1}. [${b.category_main}] ${b.name} (${b.provider})\n`;
+  });
+  text += `\n카테고리: ${cats.join(', ')}\n`;
+  text += `복사일시: ${new Date().toLocaleString('ko-KR')}\n`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('클립보드에 복사되었습니다!');
+  });
+}
+
+function showIdeaFromBasket() {
+  const el = document.getElementById('ideaResult');
+  if (!el || basket.length === 0) return;
+
+  const cats = [...new Set(basket.map(b => b.category_main))];
+  const keywords = basket.map(b => b.name.replace(/[_]/g, ' ')).join(', ');
+
+  // Find related toss apps across all categories
+  const relatedTossKeys = new Set();
+  cats.forEach(cat => {
+    (categoryMap[cat]?.toss || []).forEach(k => relatedTossKeys.add(k));
+  });
+  const competitors = [];
+  relatedTossKeys.forEach(key => {
+    (tossApps[key] || []).forEach(app => competitors.push(app.name));
+  });
+
+  const ideas = generateIdeas(cats, basket);
+
+  el.innerHTML = `<div class="idea-panel">
+    <h4>💡 조합 분석 결과</h4>
+    <div class="idea-cats">
+      ${cats.map(c => `<span>${categoryMap[c]?.icon || ''} ${c}</span>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">
+      담은 API: ${basket.map(b => b.name.split('_').pop()).join(', ')}
+    </div>
+    <div class="idea-suggest">
+      <strong>앱 아이디어:</strong>
+      <ul>${ideas.map(i => `<li>${i}</li>`).join('')}</ul>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-top:8px">
+      경쟁 토스앱 (${Math.min(competitors.length, 10)}/${competitors.length}개):
+      ${competitors.slice(0, 10).map(c => `<span style="background:var(--surface);padding:2px 6px;border-radius:4px;margin:2px;display:inline-block">${c}</span>`).join('')}
+    </div>
+  </div>`;
+}
+
+function generateIdeas(cats, items) {
+  const ideas = [];
+  const catSet = new Set(cats);
+
+  // 1. Extract keywords from actual API names, keywords, descriptions
+  const allKeywords = new Set();
+  const apiNames = [];
+  items.forEach(b => {
+    const full = allApis.find(a => a.id === b.id);
+    if (!full) return;
+    apiNames.push(full.name);
+    // Extract meaningful words from name
+    full.name.replace(/[_]/g, ' ').split(/[\s,]+/).forEach(w => {
+      if (w.length >= 2 && !['정보','서비스','데이터','공공','목록','현황','조회','제공','API','GW','DB'].includes(w))
+        allKeywords.add(w);
+    });
+    // Extract from keywords field
+    (full.keywords || '').split(/[,\s]+/).forEach(w => {
+      if (w.length >= 2) allKeywords.add(w);
+    });
+  });
+
+  const kw = [...allKeywords];
+  const kwStr = kw.join(' ');
+
+  // 2. Keyword-based smart matching
+  const patterns = [
+    { match: w => /관광|여행|tour|travel/.test(w), ideas: [] },
+    { match: w => /영화|영상|미디어|드라마|콘텐츠/.test(w), ideas: [] },
+    { match: w => /음식|식품|식당|맛집|영양|레시피|요리/.test(w), ideas: [] },
+    { match: w => /병원|의료|약|건강|진료/.test(w), ideas: [] },
+    { match: w => /교통|버스|지하철|주차|도로/.test(w), ideas: [] },
+    { match: w => /날씨|기상|미세먼지|환경/.test(w), ideas: [] },
+    { match: w => /부동산|아파트|토지|건축|주택/.test(w), ideas: [] },
+    { match: w => /대출|금융|은행|보험|투자|환율/.test(w), ideas: [] },
+    { match: w => /일자리|채용|고용|취업|직업/.test(w), ideas: [] },
+    { match: w => /학교|교육|학습|시험|대학/.test(w), ideas: [] },
+    { match: w => /복지|지원금|보조금|수당/.test(w), ideas: [] },
+    { match: w => /농산물|축산|수산|농업|어업/.test(w), ideas: [] },
+    { match: w => /CCTV|안전|재난|경보|소방/.test(w), ideas: [] },
+    { match: w => /공원|산책|등산|자연|숲/.test(w), ideas: [] },
+    { match: w => /반려|동물|펫/.test(w), ideas: [] },
+  ];
+
+  const matched = new Set();
+  kw.forEach(w => {
+    patterns.forEach((p, i) => { if (p.match(w)) matched.add(i); });
+  });
+
+  // 3. Generate ideas based on actual keyword combinations
+  const m = [...matched];
+  const has = (idx) => matched.has(idx);
+
+  // Tourism + Film/Media
+  if (has(0) && has(1))
+    ideas.push('🎬 영화/드라마 촬영지 관광 가이드 — 촬영지 위치 + 관광정보 연동, 팬투어 코스 추천');
+  if (has(0) && has(1))
+    ideas.push('🗺️ 문화 코스 플래너 — 관광지 + 영화관/공연장 연계 하루 코스 자동 생성');
+  // Tourism + Food
+  if (has(0) && has(2))
+    ideas.push('🍜 여행지 맛집 가이드 — 관광지 주변 맛집/특산물 추천');
+  // Tourism + Transport
+  if (has(0) && has(4))
+    ideas.push('🚌 관광지 교통 플래너 — 관광지까지 대중교통 경로 + 소요시간');
+  // Tourism + Weather
+  if (has(0) && has(5))
+    ideas.push('☀️ 날씨 맞춤 여행 추천 — 오늘 날씨에 맞는 실내/야외 관광지 추천');
+  // Food + Health
+  if (has(2) && has(3))
+    ideas.push('🥗 맞춤 건강 식단 — 영양정보 + 건강상태 기반 식단 추천');
+  // Health + Transport
+  if (has(3) && has(4))
+    ideas.push('🏥 응급 병원 길찾기 — 가까운 병원 + 최적 경로 안내');
+  // Real Estate + Finance
+  if (has(6) && has(7))
+    ideas.push('🏠 내 집 마련 계산기 — 실거래가 + 대출상품 + 월 상환액 시뮬레이션');
+  // Job + Education
+  if (has(8) && has(9))
+    ideas.push('📋 진로 매칭 — 전공/자격증 기반 채용공고 자동 추천');
+  // Welfare + Finance
+  if (has(10) && has(7))
+    ideas.push('💰 복지+대출 통합 — 내가 받을 수 있는 지원금/대출 한눈에');
+  // Agriculture + Food
+  if (has(11) && has(2))
+    ideas.push('🌽 산지직송 가격비교 — 농수산물 시세 + 안전 인증 정보');
+  // Safety + Transport
+  if (has(12) && has(4))
+    ideas.push('🚶 안심 귀가 — CCTV/가로등 위치 + 안전 경로 안내');
+  // Park/Nature + Weather
+  if (has(13) && has(5))
+    ideas.push('🌲 산책/등산 날씨 가이드 — 공원/산 정보 + 실시간 날씨/미세먼지');
+  // Pet + Health
+  if (has(14) && has(3))
+    ideas.push('🐕 반려동물 병원 찾기 — 동물병원 + 진료정보 통합');
+  // Film + Food
+  if (has(1) && has(2))
+    ideas.push('🎥 영화 속 맛집 — 영화/드라마에 나온 음식점/레시피 탐색');
+  // Film alone
+  if (has(1) && !has(0))
+    ideas.push('🎞️ 영화 탐색기 — 영화정보 검색 + 추천 + 주변 영화관 안내');
+  // Tourism alone (multiple tourism APIs)
+  if (has(0) && m.length === 1)
+    ideas.push('📍 관광 통합검색 — 여러 관광 데이터를 하나로, 지역별/테마별 필터');
+
+  // 4. If still no ideas, generate from actual API names
+  if (ideas.length === 0) {
+    const shortNames = items.map(b => {
+      const parts = b.name.split('_');
+      return parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
+    });
+
+    if (items.length >= 2) {
+      ideas.push(`🔗 "${shortNames[0]}" + "${shortNames[1]}" 통합 조회 — 두 데이터를 한 화면에서 교차 검색`);
+      ideas.push(`📊 ${shortNames[0]} 기반 대시보드 — ${shortNames.slice(1).join(', ')} 데이터 연동 분석`);
+    } else {
+      ideas.push(`📱 ${shortNames[0]} 전용 앱 — 검색/필터/즐겨찾기/알림 기능`);
+    }
+
+    // Suggest based on keywords
+    if (kw.length > 0) {
+      ideas.push(`🏷️ 키워드 기반 추천: ${kw.slice(0, 8).join(', ')} → 이 데이터로 어떤 서비스가 가능할지 팀과 논의`);
+    }
+  }
+
+  // 5. Cross-category bonus
+  if (cats.length >= 2) {
+    const catNames = cats.map(c => `${categoryMap[c]?.icon||''} ${c}`).join(' + ');
+    ideas.push(`🔥 크로스 카테고리 (${catNames}) — 카테고리를 넘나드는 조합은 토스에서 유사 앱이 적어 차별화 유리`);
+  }
+  if (cats.length >= 3) {
+    ideas.push(`⚡ ${cats.length}개 카테고리 조합 — 높은 차별화! 경쟁 앱 거의 없을 가능성`);
+  }
+
+  // 6. Same-category items: suggest specialization
+  if (cats.length === 1 && items.length >= 2) {
+    ideas.push(`🎯 같은 카테고리 ${items.length}개 API 조합 — "${cats[0]}" 분야 올인원 앱으로 깊이 있는 서비스 가능`);
+  }
+
+  return ideas;
+}
+
+// Basket full page view
+function showBasketPage() {
+  currentView = 'basket-page';
+  setActiveNav('navBasket');
+
+  if (basket.length === 0) {
+    document.getElementById('content').innerHTML = `
+      <div style="text-align:center;padding:80px 20px">
+        <div style="font-size:48px;margin-bottom:16px">🛒</div>
+        <h2 style="margin-bottom:8px">장바구니가 비어있습니다</h2>
+        <p style="color:var(--text2)">카테고리를 둘러보면서 관심있는 API의 + 버튼을 눌러보세요</p>
+        <button style="margin-top:16px;padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px" onclick="showCategories()">카테고리 둘러보기</button>
+      </div>`;
+    return;
+  }
+
+  const cats = [...new Set(basket.map(b => b.category_main))];
+  const ideas = generateIdeas(cats, basket);
+
+  // Group by category
+  const grouped = {};
+  basket.forEach(b => {
+    if (!grouped[b.category_main]) grouped[b.category_main] = [];
+    grouped[b.category_main].push(b);
+  });
+
+  // Related toss apps
+  const relatedTossKeys = new Set();
+  cats.forEach(cat => {
+    (categoryMap[cat]?.toss || []).forEach(k => relatedTossKeys.add(k));
+  });
+
+  let html = `
+    <div class="page-header">
+      <h1>🛒 API 장바구니</h1>
+      <span class="count">${basket.length}개 API, ${cats.length}개 카테고리</span>
+    </div>
+
+    <div class="idea-panel" style="margin-bottom:24px">
+      <h4>💡 조합 분석</h4>
+      <div class="idea-cats">
+        ${cats.map(c => `<span>${categoryMap[c]?.icon || ''} ${c}</span>`).join('')}
+      </div>
+      <div class="idea-suggest">
+        <ul>${ideas.map(i => `<li>${i}</li>`).join('')}</ul>
+      </div>
+    </div>
+
+    ${Object.entries(grouped).map(([cat, apis]) => `
+      <div class="section-title">${categoryMap[cat]?.icon || ''} ${cat} (${apis.length}개)<span class="line"></span></div>
+      <div class="api-list" style="margin-bottom:24px">
+        ${apis.map(a => {
+          const full = allApis.find(x => x.id === a.id);
+          return full ? renderApiCard(full) : '';
+        }).join('')}
+      </div>
+    `).join('')}
+
+    <div class="section-title">경쟁 토스 앱 현황<span class="line"></span></div>
+    <div class="related-toss-section">
+      ${[...relatedTossKeys].map(key => {
+        const apps = tossApps[key] || [];
+        if (apps.length === 0) return '';
+        return `<div class="related-toss-group">
+          <div class="rtg-label">${key} (${apps.length}개)</div>
+          <div class="rtg-apps">
+            ${apps.slice(0, 20).map(a => `<span title="${escHtml(a.desc)}">${escHtml(a.name)}</span>`).join('')}
+            ${apps.length > 20 ? `<span style="color:var(--text2)">+${apps.length - 20}개</span>` : ''}
+          </div>
+        </div>`;
+      }).filter(Boolean).join('')}
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:24px">
+      <button onclick="exportBasket()" style="padding:10px 24px;background:var(--green);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">📋 클립보드에 복사</button>
+      <button onclick="clearBasket()" style="padding:10px 24px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px">🗑️ 장바구니 비우기</button>
+    </div>
+  `;
+  document.getElementById('content').innerHTML = html;
+}
+
+function showTossApps() {
+  currentView = 'toss';
+  setActiveNav('navToss');
+
+  const total = Object.values(tossApps).reduce((s, arr) => s + arr.length, 0);
+  const sorted = Object.entries(tossApps).sort((a, b) => b[1].length - a[1].length);
+
+  let html = `
+    <div class="page-header">
+      <h1>토스 앱 현황</h1>
+      <span class="count">총 ${total}개 앱, ${sorted.length}개 카테고리</span>
+    </div>
+    ${sorted.map(([cat, apps]) => `
+      <div class="toss-category">
+        <div class="toss-category-header" onclick="this.nextElementSibling.classList.toggle('open')">
+          <h3>${cat}</h3>
+          <span class="cnt">${apps.length}</span>
+        </div>
+        <div class="toss-apps-list">
+          ${apps.map(a => `
+            <div class="toss-app-item">
+              <div class="app-name">${escHtml(a.name)}</div>
+              <div class="app-desc">${escHtml(a.desc || '')}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('content').innerHTML = html;
+}
+
+// Global search
+let searchTimeout;
+function handleSearch(query) {
+  clearTimeout(searchTimeout);
+  if (!query || query.length < 2) {
+    if (currentView === 'search') showDashboard();
+    return;
+  }
+  searchTimeout = setTimeout(() => {
+    currentView = 'search';
+    setActiveNav('');
+    const q = query.toLowerCase();
+    const results = allApis.filter(a =>
+      a.name.toLowerCase().includes(q) ||
+      (a.keywords || '').toLowerCase().includes(q) ||
+      (a.provider || '').toLowerCase().includes(q) ||
+      (a.description || '').toLowerCase().includes(q)
+    ).sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
+     .slice(0, 100);
+
+    let html = `
+      <div class="page-header">
+        <h1>"${escHtml(query)}" 검색 결과</h1>
+        <span class="count">${results.length}${results.length >= 100 ? '+' : ''}개</span>
+      </div>
+      <div class="api-list">
+        ${results.length ? results.map(a => renderApiCard(a)).join('') :
+          '<p style="color:var(--text2);padding:40px;text-align:center">검색 결과가 없습니다</p>'}
+      </div>
+    `;
+    document.getElementById('content').innerHTML = html;
+  }, 300);
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ===== Pipeline API calls =====
+function showToast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+async function refreshTrends(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ 수집 중... (최대 2분)'; }
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 130000);
+    const res = await fetch('/api/refresh-trends', { method: 'POST', signal: controller.signal });
+    clearTimeout(timeoutId);
+    const data = await res.json();
+    if (data.success) {
+      trendData = data.trends;
+      showToast(`${data.message}`);
+      showDashboard();
+    } else {
+      showToast(data.message || '실패', 'error');
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      showToast('수집 시간 초과. 잠시 후 다시 시도해주세요.', 'error');
+    } else {
+      showToast('서버 연결 실패. python server.py로 실행했는지 확인하세요.', 'error');
+    }
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '🔄 새로고침'; }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('globalSearch').focus();
+  }
+  if (e.key === 'Escape') {
+    document.querySelector('.modal-overlay')?.remove();
+    document.getElementById('basketPanel')?.classList.remove('open');
+    if (currentView === 'search') showDashboard();
+  }
+});
+
+loadData();
+</script>
+</body>
+</html>

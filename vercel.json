@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/api/refresh-trends", "destination": "/api/refresh-trends" }
+  ],
+  "functions": {
+    "api/refresh-trends.py": {
+      "maxDuration": 60
+    }
+  }
+}

@@ -1,0 +1,1281 @@
+{
+ "generated_at": "2026-03-10 09:23",
+ "news_count": 144,
+ "top_keywords": [
+  {
+   "keyword": "경제",
+   "count": 25
+  },
+  {
+   "keyword": "코인",
+   "count": 12
+  },
+  {
+   "keyword": "주택",
+   "count": 4
+  },
+  {
+   "keyword": "금융",
+   "count": 4
+  },
+  {
+   "keyword": "기업",
+   "count": 4
+  },
+  {
+   "keyword": "정부",
+   "count": 3
+  },
+  {
+   "keyword": "투자",
+   "count": 3
+  },
+  {
+   "keyword": "은행",
+   "count": 3
+  },
+  {
+   "keyword": "운전",
+   "count": 3
+  },
+  {
+   "keyword": "환율",
+   "count": 2
+  },
+  {
+   "keyword": "금리",
+   "count": 2
+  },
+  {
+   "keyword": "대출",
+   "count": 2
+  },
+  {
+   "keyword": "카드",
+   "count": 2
+  },
+  {
+   "keyword": "규제",
+   "count": 2
+  },
+  {
+   "keyword": "급식",
+   "count": 1
+  },
+  {
+   "keyword": "여행",
+   "count": 1
+  },
+  {
+   "keyword": "영화",
+   "count": 1
+  },
+  {
+   "keyword": "영양",
+   "count": 1
+  },
+  {
+   "keyword": "문화",
+   "count": 1
+  },
+  {
+   "keyword": "국회",
+   "count": 1
+  }
+ ],
+ "top_categories": [
+  {
+   "category": "재정금융",
+   "count": 56
+  },
+  {
+   "category": "국토관리",
+   "count": 7
+  },
+  {
+   "category": "공공행정",
+   "count": 4
+  },
+  {
+   "category": "산업고용",
+   "count": 4
+  },
+  {
+   "category": "교통물류",
+   "count": 4
+  },
+  {
+   "category": "문화관광",
+   "count": 3
+  },
+  {
+   "category": "법률",
+   "count": 3
+  },
+  {
+   "category": "식품건강",
+   "count": 2
+  },
+  {
+   "category": "재난안전",
+   "count": 2
+  },
+  {
+   "category": "교육",
+   "count": 2
+  },
+  {
+   "category": "보건의료",
+   "count": 1
+  }
+ ],
+ "ideas": {
+  "trend": [
+   {
+    "type": "trend",
+    "name": "🏠 내 집 마련 플래너",
+    "description": "대출상품 비교 + 실거래가 조회 + 월 상환액 계산",
+    "categories": [
+     "재정금융",
+     "국토관리"
+    ],
+    "apis": [
+     {
+      "id": "15094787",
+      "name": "금융위원회_서민금융상품기본정보",
+      "type": "REST",
+      "downloads": 211
+     },
+     {
+      "id": "15106208",
+      "name": "서민금융진흥원_대출상품한눈에 정보 서비스",
+      "type": "REST",
+      "downloads": 186
+     },
+     {
+      "id": "15001810",
+      "name": "산업통상부_수출예정정보서비스",
+      "type": "REST",
+      "downloads": 91
+     },
+     {
+      "id": "15095837",
+      "name": "경상남도_신혼부부 내 집 마련을 위한 최적 입지 계산 데이터",
+      "type": "REST",
+      "downloads": 37
+     }
+    ],
+    "related_news": [
+     "아파트 대출 막히자 오피스텔로…1월 거래량 전년 대비 65% 급증 - 조선일보",
+     "“부동산은 끝났다”…중국 부의 재편, 거대한 이동 시작됐다? [잇슈 머니] - KBS 뉴스",
+     "[단독] LH, 임대주택에 설치된 ‘국산 둔갑’ 중국산 CCTV 1만대 교체 - 조선비즈 - Chosunbiz"
+    ],
+    "trend_score": 63,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "📊 부동산 투자 분석기",
+    "description": "공시지가 + 실거래가 추이 + 대출 시뮬레이션",
+    "categories": [
+     "재정금융",
+     "국토관리"
+    ],
+    "apis": [
+     {
+      "id": "15094809",
+      "name": "금융위원회_금융투자협회종합통계정보",
+      "type": "REST",
+      "downloads": 280
+     },
+     {
+      "id": "15124889",
+      "name": "금융위원회_채권대차거래정보",
+      "type": "REST",
+      "downloads": 24
+     },
+     {
+      "id": "15069520",
+      "name": "중소벤처기업진흥공단_코로나19피해기업지원현황",
+      "type": "LINK",
+      "downloads": 1195
+     },
+     {
+      "id": "15124014",
+      "name": "국토교통부_개별공시지가정보(WMS/WFS/속성정보)",
+      "type": "LINK",
+      "downloads": 4953
+     }
+    ],
+    "related_news": [
+     "아파트 대출 막히자 오피스텔로…1월 거래량 전년 대비 65% 급증 - 조선일보",
+     "“부동산은 끝났다”…중국 부의 재편, 거대한 이동 시작됐다? [잇슈 머니] - KBS 뉴스",
+     "[단독] LH, 임대주택에 설치된 ‘국산 둔갑’ 중국산 CCTV 1만대 교체 - 조선비즈 - Chosunbiz"
+    ],
+    "trend_score": 63,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "⚖️ 세금 계산기",
+    "description": "소득/부동산 세금 시뮬레이션 + 절세 팁",
+    "categories": [
+     "재정금융",
+     "법률"
+    ],
+    "apis": [
+     {
+      "id": "15138856",
+      "name": "행정안전부_지방재정365_세목별 징수율",
+      "type": "LINK",
+      "downloads": 61
+     },
+     {
+      "id": "15138854",
+      "name": "행정안전부_지방재정365_도시군세 세목별 비중",
+      "type": "LINK",
+      "downloads": 48
+     },
+     {
+      "id": "15059629",
+      "name": "한국은행_국민계정",
+      "type": "LINK",
+      "downloads": 1823
+     },
+     {
+      "id": "15000335",
+      "name": "법제처_생활법령 백문백답 서비스",
+      "type": "SOAP",
+      "downloads": 304
+     }
+    ],
+    "related_news": [
+     "아파트 대출 막히자 오피스텔로…1월 거래량 전년 대비 65% 급증 - 조선일보",
+     "脫탄소 넘어 '공급망 카드' 된 재활용 나프타 - 한국경제",
+     "유럽 하늘에 '불덩이'...독일 주택 지붕까지 뚫었다 - 초이스경제"
+    ],
+    "trend_score": 59,
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🏗️ 우리동네 안전 지도",
+    "description": "건축물 안전등급 + 재난위험지구 + CCTV",
+    "categories": [
+     "국토관리",
+     "재난안전"
+    ],
+    "apis": [
+     {
+      "id": "15057900",
+      "name": "국토교통부_보행우선구역(WMS/WFS)",
+      "type": "LINK",
+      "downloads": 901
+     },
+     {
+      "id": "15123906",
+      "name": "국토교통부_대지권등록정보(속성정보)",
+      "type": "LINK",
+      "downloads": 420
+     },
+     {
+      "id": "15149535",
+      "name": "행정안전부_생활안전지도 교육환경보호구역",
+      "type": "LINK",
+      "downloads": 65
+     },
+     {
+      "id": "15149544",
+      "name": "행정안전부_생활안전지도 시설안전등급도",
+      "type": "LINK",
+      "downloads": 31
+     }
+    ],
+    "related_news": [
+     "아파트 대출 막히자 오피스텔로…1월 거래량 전년 대비 65% 급증 - 조선일보",
+     "“부동산은 끝났다”…중국 부의 재편, 거대한 이동 시작됐다? [잇슈 머니] - KBS 뉴스",
+     "[단독] LH, 임대주택에 설치된 ‘국산 둔갑’ 중국산 CCTV 1만대 교체 - 조선비즈 - Chosunbiz"
+    ],
+    "trend_score": 9,
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🗺️ 여행 코스 플래너",
+    "description": "관광지 정보 + 대중교통 경로 + 소요시간",
+    "categories": [
+     "교통물류",
+     "문화관광"
+    ],
+    "apis": [
+     {
+      "id": "15001019",
+      "name": "부산교통공사_부산도시철도 운행 정보",
+      "type": "REST",
+      "downloads": 443
+     },
+     {
+      "id": "15040463",
+      "name": "국토교통부_교통소통정보",
+      "type": "LINK",
+      "downloads": 3906
+     },
+     {
+      "id": "15000414",
+      "name": "서울특별시_대중교통환승경로 조회 서비스",
+      "type": "REST",
+      "downloads": 2708
+     },
+     {
+      "id": "15095844",
+      "name": "대구광역시 북구_관광코스 정보_API",
+      "type": "REST",
+      "downloads": 72
+     }
+    ],
+    "related_news": [
+     "[속보]삼전·하닉 10% 넘게↓…코스피 5000도 위험, 서킷브레이커 발동 - 문화일보",
+     "\"원전 탄력운전 선진모델인데\"…프랑스는 출력 확대로 선회 - 네이트",
+     "미국 \"튀르키예 동남부 '여행금지'‥비필수 공관 인력 소개령\" - MBC 뉴스"
+    ],
+    "trend_score": 7,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🚌 축제 교통 가이드",
+    "description": "축제 일정 + 셔틀/교통 + 주차장 안내",
+    "categories": [
+     "교통물류",
+     "문화관광"
+    ],
+    "apis": [
+     {
+      "id": "15066325",
+      "name": "대구교통공사_문화행사 정보",
+      "type": "LINK",
+      "downloads": 219
+     },
+     {
+      "id": "15099715",
+      "name": "제주특별자치도_주차장기본정보",
+      "type": "LINK",
+      "downloads": 1350
+     },
+     {
+      "id": "15079829",
+      "name": "제주특별자치도_제주 C-ITS 교통정보",
+      "type": "LINK",
+      "downloads": 1008
+     },
+     {
+      "id": "15122590",
+      "name": "국토교통부_전통시장현황",
+      "type": "LINK",
+      "downloads": 1050
+     }
+    ],
+    "related_news": [
+     "[속보]삼전·하닉 10% 넘게↓…코스피 5000도 위험, 서킷브레이커 발동 - 문화일보",
+     "\"원전 탄력운전 선진모델인데\"…프랑스는 출력 확대로 선회 - 네이트",
+     "미국 \"튀르키예 동남부 '여행금지'‥비필수 공관 인력 소개령\" - MBC 뉴스"
+    ],
+    "trend_score": 7,
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "📋 진로 매칭",
+    "description": "전공/자격증 → 채용공고 자동 추천",
+    "categories": [
+     "산업고용",
+     "교육"
+    ],
+    "apis": [
+     {
+      "id": "15037287",
+      "name": "한국고용정보원_워크넷 공통코드 지역, 직종, 자격면허 등",
+      "type": "LINK",
+      "downloads": 507
+     },
+     {
+      "id": "15043061",
+      "name": "영화진흥위원회_채용_정보",
+      "type": "LINK",
+      "downloads": 244
+     },
+     {
+      "id": "15125656",
+      "name": "중소벤처기업진흥공단_기업인력애로센터_일자리매칭플랫폼_채용공고목록 및 상세정보",
+      "type": "LINK",
+      "downloads": 146
+     },
+     {
+      "id": "15057878",
+      "name": "교육부_커리어넷 대학학과정보",
+      "type": "LINK",
+      "downloads": 4180
+     }
+    ],
+    "related_news": [
+     "제미나이 이어 GPT도 '수능 만점'...구유겸 학생 \"AI 발전 놀라워\" - AI타임스",
+     "이 대통령 \"기업 경영, 정상적으로 해야‥불법 행위시 엄중 제재\" - MBC 뉴스",
+     "현실로 닥친 ‘자사주 의무 소각’…기업들, 우회로 탐색 분주 - 한겨레"
+    ],
+    "trend_score": 6,
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🎓 장학금 + 일자리",
+    "description": "장학금 검색 + 관련 인턴/일자리 연계",
+    "categories": [
+     "산업고용",
+     "교육"
+    ],
+    "apis": [
+     {
+      "id": "15058356",
+      "name": "한국고용정보원_워크넷_정부지원일자리정보_일자리사업정보",
+      "type": "LINK",
+      "downloads": 1304
+     },
+     {
+      "id": "15059254",
+      "name": "경기도_청년취업인턴제운영기관 현황",
+      "type": "LINK",
+      "downloads": 169
+     },
+     {
+      "id": "15120442",
+      "name": "성평등가족부_e새일 교육일정 정보",
+      "type": "REST",
+      "downloads": 8
+     },
+     {
+      "id": "15059373",
+      "name": "한국노인인력개발원_교육정보 목록 검색",
+      "type": "REST",
+      "downloads": 107
+     }
+    ],
+    "related_news": [
+     "제미나이 이어 GPT도 '수능 만점'...구유겸 학생 \"AI 발전 놀라워\" - AI타임스",
+     "이 대통령 \"기업 경영, 정상적으로 해야‥불법 행위시 엄중 제재\" - MBC 뉴스",
+     "현실로 닥친 ‘자사주 의무 소각’…기업들, 우회로 탐색 분주 - 한겨레"
+    ],
+    "trend_score": 6,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🚶 안심 귀가",
+    "description": "CCTV/가로등 위치 + 안전 경로 + 비상연락",
+    "categories": [
+     "교통물류",
+     "재난안전"
+    ],
+    "apis": [
+     {
+      "id": "15040466",
+      "name": "국토교통부_CCTV 화상자료",
+      "type": "LINK",
+      "downloads": 21522
+     },
+     {
+      "id": "15040464",
+      "name": "국토교통부_사고 정보",
+      "type": "LINK",
+      "downloads": 1781
+     },
+     {
+      "id": "15041673",
+      "name": "국가철도공단_역사별 환승정보",
+      "type": "LINK",
+      "downloads": 485
+     },
+     {
+      "id": "15110575",
+      "name": "대구광역시 동구_동구청 안심귀갓길 조성 현황",
+      "type": "REST",
+      "downloads": 8
+     }
+    ],
+    "related_news": [
+     "\"원전 탄력운전 선진모델인데\"…프랑스는 출력 확대로 선회 - 네이트",
+     "[단독] LH, 임대주택에 설치된 ‘국산 둔갑’ 중국산 CCTV 1만대 교체 - 조선비즈 - Chosunbiz",
+     "“핵폭탄 11개분 우라늄 제거” 美항공기 100대-2400명 투입하나 - 동아일보"
+    ],
+    "trend_score": 6,
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🚨 재난 대피 경로",
+    "description": "재난 유형별 대피소 + 최적 경로 안내",
+    "categories": [
+     "교통물류",
+     "재난안전"
+    ],
+    "apis": [
+     {
+      "id": "15058320",
+      "name": "대전광역시_노선정보조회 서비스",
+      "type": "REST",
+      "downloads": 1382
+     },
+     {
+      "id": "15076732",
+      "name": "한국도로공사_톨게이트간 톨게이트 목록조회",
+      "type": "LINK",
+      "downloads": 1358
+     },
+     {
+      "id": "3034841",
+      "name": "대전광역시_대전교통정보",
+      "type": "REST",
+      "downloads": 454
+     },
+     {
+      "id": "15058704",
+      "name": "국토교통부_안전정보도(WMS/WFS)",
+      "type": "LINK",
+      "downloads": 359
+     }
+    ],
+    "related_news": [
+     "\"원전 탄력운전 선진모델인데\"…프랑스는 출력 확대로 선회 - 네이트",
+     "[단독] LH, 임대주택에 설치된 ‘국산 둔갑’ 중국산 CCTV 1만대 교체 - 조선비즈 - Chosunbiz",
+     "“핵폭탄 11개분 우라늄 제거” 美항공기 100대-2400명 투입하나 - 동아일보"
+    ],
+    "trend_score": 6,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "💊 약국 찾기",
+    "description": "24시 약국 위치 + 경로 안내 + 재고 확인",
+    "categories": [
+     "교통물류",
+     "보건의료"
+    ],
+    "apis": [
+     {
+      "id": "15076728",
+      "name": "한국도로공사_영업소 위치정보",
+      "type": "LINK",
+      "downloads": 1781
+     },
+     {
+      "id": "15076689",
+      "name": "한국도로공사_톨게이트 목록 현황",
+      "type": "LINK",
+      "downloads": 1272
+     },
+     {
+      "id": "15076638",
+      "name": "한국도로공사_LPG 휴게소 현황",
+      "type": "LINK",
+      "downloads": 1104
+     },
+     {
+      "id": "15021028",
+      "name": "건강보험심사평가원_수가기준정보조회서비스",
+      "type": "REST",
+      "downloads": 1122
+     }
+    ],
+    "related_news": [
+     "\"원전 탄력운전 선진모델인데\"…프랑스는 출력 확대로 선회 - 네이트",
+     "“핵폭탄 11개분 우라늄 제거” 美항공기 100대-2400명 투입하나 - 동아일보",
+     "배성우, 오늘(9일) 6년만에 카메라 앞…음주운전 논란 후 '끝장수사'로 복귀 - 네이트"
+    ],
+    "trend_score": 5,
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🍜 여행지 맛집 가이드",
+    "description": "관광지 주변 맛집 + 특산물 + 영양정보",
+    "categories": [
+     "문화관광",
+     "식품건강"
+    ],
+    "apis": [
+     {
+      "id": "15063472",
+      "name": "부산광역시_부산맛집정보 서비스",
+      "type": "REST",
+      "downloads": 1737
+     },
+     {
+      "id": "15111780",
+      "name": "전라남도_전남관광플랫폼(J-TaaS)의 음식관광 정보 확대를 위한 음식점 DB OPEN API",
+      "type": "LINK",
+      "downloads": 208
+     },
+     {
+      "id": "15098512",
+      "name": "강원특별자치도_반려동물동반관광정보",
+      "type": "LINK",
+      "downloads": 2120
+     },
+     {
+      "id": "15057234",
+      "name": "경기도_맛집 현황",
+      "type": "LINK",
+      "downloads": 4100
+     }
+    ],
+    "related_news": [
+     "[속보]삼전·하닉 10% 넘게↓…코스피 5000도 위험, 서킷브레이커 발동 - 문화일보",
+     "미국 \"튀르키예 동남부 '여행금지'‥비필수 공관 인력 소개령\" - MBC 뉴스",
+     "1000만 영화 `왕사남, 표절의혹…“장면·설정 유사” VS “참고한 적 없어” - 디지털데일리"
+    ],
+    "trend_score": 5,
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "trend",
+    "name": "🥗 맞춤 건강 식단",
+    "description": "질병별 식단 추천 + 영양분석 + 약 상호작용",
+    "categories": [
+     "식품건강",
+     "보건의료"
+    ],
+    "apis": [
+     {
+      "id": "15058981",
+      "name": "농림수산식품교육문화정보원_레시피 재료정보",
+      "type": "LINK",
+      "downloads": 10145
+     },
+     {
+      "id": "15110588",
+      "name": "대구광역시 동구_나트륨줄이기실천음식점 현황",
+      "type": "REST",
+      "downloads": 14
+     },
+     {
+      "id": "15110533",
+      "name": "대구광역시 서구_나트륨줄이기 실천업소 현황",
+      "type": "REST",
+      "downloads": 8
+     },
+     {
+      "id": "15057953",
+      "name": "경기도_병원평가정보(약품목수) 현황",
+      "type": "LINK",
+      "downloads": 51
+     }
+    ],
+    "related_news": [
+     "하청 급식업체까지 “본사 성과급 달라” - 조선일보",
+     "코로나 이후 줄줄이 문 닫더니 결국…떡집 사장님 '눈물' [현장+] - 한국경제",
+     "‘이 영양소’ 부족하면 췌장 기능 저해… 혈당 널뛴다 - 조선일보"
+    ],
+    "trend_score": 3,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "medium"
+   },
+   {
+    "type": "trend",
+    "name": "🍽️ 알레르기 안심 식당",
+    "description": "식품 알레르기 정보 + 안심 식당 찾기",
+    "categories": [
+     "식품건강",
+     "보건의료"
+    ],
+    "apis": [
+     {
+      "id": "15033307",
+      "name": "한국식품안전관리인증원_HACCP 제품이미지 및 포장지표기정보",
+      "type": "REST",
+      "downloads": 2125
+     },
+     {
+      "id": "15108166",
+      "name": "대전광역시 서구_일반음식점현황",
+      "type": "LINK",
+      "downloads": 135
+     },
+     {
+      "id": "15095971",
+      "name": "대구광역시 북구_안심음식점 지정 현황",
+      "type": "REST",
+      "downloads": 92
+     },
+     {
+      "id": "3076416",
+      "name": "부산광역시 아토피천식 안심학교 현황",
+      "type": "REST",
+      "downloads": 40
+     }
+    ],
+    "related_news": [
+     "하청 급식업체까지 “본사 성과급 달라” - 조선일보",
+     "코로나 이후 줄줄이 문 닫더니 결국…떡집 사장님 '눈물' [현장+] - 한국경제",
+     "‘이 영양소’ 부족하면 췌장 기능 저해… 혈당 널뛴다 - 조선일보"
+    ],
+    "trend_score": 3,
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "medium"
+   }
+  ],
+  "smart": [
+   {
+    "type": "smart",
+    "name": "💰 내 복지 혜택 찾기",
+    "description": "소득/가구 기준 맞춤 지원금 + 대출 통합 조회",
+    "categories": [
+     "사회복지",
+     "재정금융"
+    ],
+    "apis": [
+     {
+      "id": "15057747",
+      "name": "경기도_기초생활보장 장애인포함 수급가구 시군연령",
+      "type": "LINK",
+      "downloads": 240
+     },
+     {
+      "id": "15057561",
+      "name": "경기도_기초생활보장 장애인 연령별 수급자현황",
+      "type": "LINK",
+      "downloads": 193
+     },
+     {
+      "id": "15096029",
+      "name": "충청남도 계룡시_기초생활수급자 총괄현황 API",
+      "type": "REST",
+      "downloads": 17
+     },
+     {
+      "id": "15069520",
+      "name": "중소벤처기업진흥공단_코로나19피해기업지원현황",
+      "type": "LINK",
+      "downloads": 1195
+     }
+    ],
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🗺️ 여행 코스 플래너",
+    "description": "관광지 정보 + 대중교통 경로 + 소요시간",
+    "categories": [
+     "문화관광",
+     "교통물류"
+    ],
+    "apis": [
+     {
+      "id": "15095844",
+      "name": "대구광역시 북구_관광코스 정보_API",
+      "type": "REST",
+      "downloads": 72
+     },
+     {
+      "id": "15101897",
+      "name": "한국관광공사_무장애 여행 정보_GW",
+      "type": "REST",
+      "downloads": 1415
+     },
+     {
+      "id": "15068870",
+      "name": "경상남도 진주시_관광정보",
+      "type": "LINK",
+      "downloads": 743
+     },
+     {
+      "id": "15001019",
+      "name": "부산교통공사_부산도시철도 운행 정보",
+      "type": "REST",
+      "downloads": 443
+     }
+    ],
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🌽 산지직송 가격비교",
+    "description": "농수산물 시세 + 안전인증 + 영양정보",
+    "categories": [
+     "농축수산",
+     "식품건강"
+    ],
+    "apis": [
+     {
+      "id": "15008409",
+      "name": "농림수산식품교육문화정보원_중국 도매시장 가격정보",
+      "type": "LINK",
+      "downloads": 658
+     },
+     {
+      "id": "15004517",
+      "name": "서울특별시농수산식품공사_주요 품목 가격",
+      "type": "LINK",
+      "downloads": 4345
+     },
+     {
+      "id": "15076020",
+      "name": "서울특별시농수산식품공사_경매결과",
+      "type": "LINK",
+      "downloads": 1161
+     },
+     {
+      "id": "15057205",
+      "name": "농림수산식품교육문화정보원_레시피 기본정보",
+      "type": "LINK",
+      "downloads": 4937
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🚶 안심 귀가",
+    "description": "CCTV/가로등 위치 + 안전 경로 + 비상연락",
+    "categories": [
+     "재난안전",
+     "교통물류"
+    ],
+    "apis": [
+     {
+      "id": "15110575",
+      "name": "대구광역시 동구_동구청 안심귀갓길 조성 현황",
+      "type": "REST",
+      "downloads": 8
+     },
+     {
+      "id": "3069061",
+      "name": "전북특별자치도 전주시_CCTV 설치현황",
+      "type": "REST",
+      "downloads": 376
+     },
+     {
+      "id": "15058704",
+      "name": "국토교통부_안전정보도(WMS/WFS)",
+      "type": "LINK",
+      "downloads": 359
+     },
+     {
+      "id": "15040466",
+      "name": "국토교통부_CCTV 화상자료",
+      "type": "LINK",
+      "downloads": 21522
+     }
+    ],
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🥗 맞춤 건강 식단",
+    "description": "질병별 식단 추천 + 영양분석 + 약 상호작용",
+    "categories": [
+     "식품건강",
+     "보건의료"
+    ],
+    "apis": [
+     {
+      "id": "15058981",
+      "name": "농림수산식품교육문화정보원_레시피 재료정보",
+      "type": "LINK",
+      "downloads": 10145
+     },
+     {
+      "id": "15110588",
+      "name": "대구광역시 동구_나트륨줄이기실천음식점 현황",
+      "type": "REST",
+      "downloads": 14
+     },
+     {
+      "id": "15110533",
+      "name": "대구광역시 서구_나트륨줄이기 실천업소 현황",
+      "type": "REST",
+      "downloads": 8
+     },
+     {
+      "id": "15057953",
+      "name": "경기도_병원평가정보(약품목수) 현황",
+      "type": "LINK",
+      "downloads": 51
+     }
+    ],
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "📋 진로 매칭",
+    "description": "전공/자격증 → 채용공고 자동 추천",
+    "categories": [
+     "교육",
+     "산업고용"
+    ],
+    "apis": [
+     {
+      "id": "15057878",
+      "name": "교육부_커리어넷 대학학과정보",
+      "type": "LINK",
+      "downloads": 4180
+     },
+     {
+      "id": "15057333",
+      "name": "경기도_졸업생의 취업현황(전문대학원)",
+      "type": "LINK",
+      "downloads": 136
+     },
+     {
+      "id": "15058917",
+      "name": "교육부_커리어넷 학교정보",
+      "type": "LINK",
+      "downloads": 2782
+     },
+     {
+      "id": "15037287",
+      "name": "한국고용정보원_워크넷 공통코드 지역, 직종, 자격면허 등",
+      "type": "LINK",
+      "downloads": 507
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🌧️ 날씨 맞춤 교통",
+    "description": "기상정보 + 교통상황 + 최적 이동수단 추천",
+    "categories": [
+     "환경기상",
+     "교통물류"
+    ],
+    "apis": [
+     {
+      "id": "15014378",
+      "name": "경상남도 창녕군_날씨정보",
+      "type": "LINK",
+      "downloads": 2033
+     },
+     {
+      "id": "15126649",
+      "name": "기상청_통보문 조회서비스",
+      "type": "LINK",
+      "downloads": 781
+     },
+     {
+      "id": "15139488",
+      "name": "기상청_저고도 기상정보 조회서비스",
+      "type": "LINK",
+      "downloads": 199
+     },
+     {
+      "id": "15040466",
+      "name": "국토교통부_CCTV 화상자료",
+      "type": "LINK",
+      "downloads": 21522
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🏗️ 우리동네 안전 지도",
+    "description": "건축물 안전등급 + 재난위험지구 + CCTV",
+    "categories": [
+     "국토관리",
+     "재난안전"
+    ],
+    "apis": [
+     {
+      "id": "15057900",
+      "name": "국토교통부_보행우선구역(WMS/WFS)",
+      "type": "LINK",
+      "downloads": 901
+     },
+     {
+      "id": "15123906",
+      "name": "국토교통부_대지권등록정보(속성정보)",
+      "type": "LINK",
+      "downloads": 420
+     },
+     {
+      "id": "15149535",
+      "name": "행정안전부_생활안전지도 교육환경보호구역",
+      "type": "LINK",
+      "downloads": 65
+     },
+     {
+      "id": "15149544",
+      "name": "행정안전부_생활안전지도 시설안전등급도",
+      "type": "LINK",
+      "downloads": 31
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "🏥 응급 병원 길찾기",
+    "description": "가까운 응급실 + 최적 경로 + 대기시간",
+    "categories": [
+     "보건의료",
+     "교통물류"
+    ],
+    "apis": [
+     {
+      "id": "15059054",
+      "name": "경기도_응급환자이송업 현황",
+      "type": "LINK",
+      "downloads": 397
+     },
+     {
+      "id": "15098770",
+      "name": "보건복지부_코로나19 국민안심병원 선별진료소 현황",
+      "type": "REST",
+      "downloads": 71
+     },
+     {
+      "id": "15000563",
+      "name": "국립중앙의료원_전국 응급의료기관 정보 조회 서비스",
+      "type": "REST",
+      "downloads": 3667
+     },
+     {
+      "id": "15058320",
+      "name": "대전광역시_노선정보조회 서비스",
+      "type": "REST",
+      "downloads": 1382
+     }
+    ],
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   },
+   {
+    "type": "smart",
+    "name": "☀️ 날씨 맞춤 여행",
+    "description": "오늘 날씨에 딱 맞는 실내/야외 관광지 추천",
+    "categories": [
+     "문화관광",
+     "환경기상"
+    ],
+    "apis": [
+     {
+      "id": "15106763",
+      "name": "전북특별자치도_관광지숙박 정보",
+      "type": "REST",
+      "downloads": 49
+     },
+     {
+      "id": "15101578",
+      "name": "한국관광공사_국문 관광정보 서비스_GW",
+      "type": "REST",
+      "downloads": 19136
+     },
+     {
+      "id": "15098512",
+      "name": "강원특별자치도_반려동물동반관광정보",
+      "type": "LINK",
+      "downloads": 2120
+     },
+     {
+      "id": "15149442",
+      "name": "행정안전부_생활안전지도 자외선지수",
+      "type": "LINK",
+      "downloads": 32
+     }
+    ],
+    "feasibility": "high",
+    "competitors": 0,
+    "sustainability": "high"
+   }
+  ],
+  "random": [
+   {
+    "type": "random",
+    "name": "🎲 생활안전지도 산불발생이력 + 군립자연공원",
+    "description": "생활안전지도 산불발생이력 + 군립자연공원 데이터를 결합한 새로운 서비스. 이 조합에서 어떤 앱이 가능할지 팀과 브레인스토밍!",
+    "categories": [
+     "재난안전",
+     "농축수산"
+    ],
+    "apis": [
+     {
+      "id": "15149598",
+      "name": "행정안전부_생활안전지도 산불발생이력",
+      "type": "LINK",
+      "downloads": 135
+     },
+     {
+      "id": "15057893",
+      "name": "국토교통부_군립자연공원",
+      "type": "LINK",
+      "downloads": 168
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "unknown"
+   },
+   {
+    "type": "random",
+    "name": "🎲 생활법령정보 조회 서비스 + 병원평가정보(질병-당뇨병) 현황",
+    "description": "생활법령정보 조회 서비스 + 병원평가정보(질병-당뇨병) 현황 데이터를 결합한 새로운 서비스. 이 조합에서 어떤 앱이 가능할지 팀과 브레인스토밍!",
+    "categories": [
+     "법률",
+     "보건의료"
+    ],
+    "apis": [
+     {
+      "id": "15000215",
+      "name": "법제처_생활법령정보 조회 서비스",
+      "type": "SOAP",
+      "downloads": 227
+     },
+     {
+      "id": "15057569",
+      "name": "경기도_병원평가정보(질병-당뇨병) 현황",
+      "type": "LINK",
+      "downloads": 496
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "unknown"
+   },
+   {
+    "type": "random",
+    "name": "🎲 연안정보도 도엽제공 서비스 + 도시계획(기타기반시설)",
+    "description": "연안정보도 도엽제공 서비스 + 도시계획(기타기반시설) + 피해주의보 데이터를 결합한 새로운 서비스. 이 조합에서 어떤 앱이 가능할지 팀과 브레인스토밍!",
+    "categories": [
+     "농축수산",
+     "국토관리",
+     "공공행정"
+    ],
+    "apis": [
+     {
+      "id": "15058121",
+      "name": "해양수산부_연안정보도 도엽제공 서비스",
+      "type": "REST",
+      "downloads": 238
+     },
+     {
+      "id": "15057193",
+      "name": "국토교통부_도시계획(기타기반시설)",
+      "type": "LINK",
+      "downloads": 351
+     },
+     {
+      "id": "15057536",
+      "name": "공정거래위원회_피해주의보",
+      "type": "LINK",
+      "downloads": 684
+     }
+    ],
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "unknown"
+   },
+   {
+    "type": "random",
+    "name": "🎲 연속지적도형정보(WMS/WFS) + 초등학교 현황",
+    "description": "연속지적도형정보(WMS/WFS) + 초등학교 현황 데이터를 결합한 새로운 서비스. 이 조합에서 어떤 앱이 가능할지 팀과 브레인스토밍!",
+    "categories": [
+     "국토관리",
+     "교육"
+    ],
+    "apis": [
+     {
+      "id": "15123899",
+      "name": "국토교통부_연속지적도형정보(WMS/WFS)",
+      "type": "LINK",
+      "downloads": 1921
+     },
+     {
+      "id": "15058791",
+      "name": "경기도_초등학교 현황",
+      "type": "LINK",
+      "downloads": 2286
+     }
+    ],
+    "feasibility": "low",
+    "competitors": 0,
+    "sustainability": "unknown"
+   },
+   {
+    "type": "random",
+    "name": "🎲 도시계획(방재시설) +  사회서비스 제공기관 품질평가 정보",
+    "description": "도시계획(방재시설) +  사회서비스 제공기관 품질평가 정보 + 휴게음식점(떡카페) 현황 데이터를 결합한 새로운 서비스. 이 조합에서 어떤 앱이 가능할지 팀과 브레인스토밍!",
+    "categories": [
+     "국토관리",
+     "사회복지",
+     "식품건강"
+    ],
+    "apis": [
+     {
+      "id": "15058205",
+      "name": "국토교통부_도시계획(방재시설)",
+      "type": "LINK",
+      "downloads": 416
+     },
+     {
+      "id": "3075061",
+      "name": "한국사회보장정보원_ 사회서비스 제공기관 품질평가 정보",
+      "type": "REST",
+      "downloads": 250
+     },
+     {
+      "id": "15058987",
+      "name": "경기도_휴게음식점(떡카페) 현황",
+      "type": "LINK",
+      "downloads": 125
+     }
+    ],
+    "feasibility": "medium",
+    "competitors": 0,
+    "sustainability": "unknown"
+   }
+  ]
+ },
+ "total_ideas": 29
+}
