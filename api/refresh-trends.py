@@ -125,9 +125,15 @@ def generate_ideas_with_claude(news_titles, keyword_counts, category_counts):
         for cat, info in API_CATEGORIES.items()
     ])
 
-    prompt = f"""오늘의 뉴스 헤드라인과 공공데이터 API를 분석해서, 실용적인 모바일 앱 아이디어를 생성해주세요.
+    prompt = f"""뉴스 헤드라인에서 "요즘 트렌드"를 읽고, 공공데이터 API를 활용한 모바일 앱 아이디어를 생성해주세요.
 
-## 오늘의 주요 뉴스 (최근 수집)
+## 중요 배경
+- 공공데이터 API는 활용신청 후 승인까지 1~3일 소요됨
+- 따라서 "오늘 당장 필요한 속보성 앱"이 아니라, **몇 주~몇 달간 유효한 트렌드 기반 앱**이어야 함
+- 예: "환율 급등" 뉴스 → ❌ "오늘 환율 속보" / ✅ "환율 변동기 해외송금 절약 가이드"
+- 예: "AI 열풍" 뉴스 → ❌ "AI 뉴스 모음" / ✅ "AI 자격증 취업 매칭"
+
+## 최근 뉴스 헤드라인 (트렌드 파악용)
 {chr(10).join(f'- {t}' for t in top_news)}
 
 ## 트렌드 키워드 (빈도순)
@@ -140,21 +146,22 @@ def generate_ideas_with_claude(news_titles, keyword_counts, category_counts):
 {cat_info}
 
 ## 요청사항
-위 뉴스 트렌드를 반영한 앱 아이디어를 JSON 배열로 20개 생성해주세요.
+위 뉴스에서 읽히는 **중장기 트렌드**를 반영한 앱 아이디어를 JSON 배열로 20개 생성해주세요.
 
 규칙:
-1. 각 아이디어는 반드시 위 뉴스 내용과 직접 연관되어야 함
+1. 속보/단기 이슈가 아니라 **몇 주~몇 달간 유효한 트렌드** 기반이어야 함
 2. 공공데이터 API 2~3개를 조합해서 만들 수 있는 앱이어야 함
 3. 토스 미니앱(간단한 유틸리티/정보 앱)에 적합해야 함
 4. 이모지 1개 + 짧은 앱 이름 (10자 이내)
-5. related_news에는 이 아이디어와 직접 관련된 뉴스 제목 1~2개를 원문 그대로 포함
+5. related_news에는 이 트렌드를 보여주는 뉴스 제목 1~2개를 원문 그대로 포함
+6. description에 어떤 공공데이터 API를 어떻게 조합하는지 구체적으로 설명
 
 JSON 형식 (반드시 이 형식만):
 ```json
 [
   {{
-    "name": "🏠 전세사기 체크",
-    "description": "건물 등기부등본 + 전세가율 + 사기이력 조회로 안전한 전세 확인",
+    "name": "🏠 전세안심 체크",
+    "description": "등기부등본 API + 실거래가 API + 전세가율로 전세사기 위험도 자동 분석",
     "categories": ["재정금융", "국토관리"],
     "feasibility": "high",
     "sustainability": "high",
@@ -165,8 +172,8 @@ JSON 형식 (반드시 이 형식만):
 ```
 
 feasibility: high(바로 개발 가능) / medium(보통) / low(난이도 높음)
-sustainability: high(지속형) / medium(중기) / low(단기)
-trend_score: 1~10 (뉴스 트렌드 반영도)
+sustainability: high(지속형=계속 쓸 앱) / medium(시즌형=몇 달) / low(단기=몇 주)
+trend_score: 1~10 (트렌드 반영도, 높을수록 뉴스와 연관 강함)
 
 JSON 배열만 출력하세요. 다른 텍스트 없이."""
 
@@ -184,7 +191,28 @@ JSON 배열만 출력하세요. 다른 텍스트 없이."""
     elif '```' in text:
         text = text.split('```')[1].split('```')[0].strip()
 
-    ideas = json.loads(text)
+    # JSON 파싱 (실패 시 repair 시도)
+    try:
+        ideas = json.loads(text)
+    except json.JSONDecodeError:
+        # 흔한 문제: 뉴스 제목에 이스케이프 안 된 따옴표
+        # 마지막 유효한 ] 위치까지만 파싱
+        last_bracket = text.rfind(']')
+        if last_bracket > 0:
+            try:
+                ideas = json.loads(text[:last_bracket + 1])
+            except json.JSONDecodeError:
+                # 각 객체를 개별 파싱
+                ideas = []
+                for match in re.finditer(r'\{[^{}]+\}', text):
+                    try:
+                        obj = json.loads(match.group())
+                        if 'name' in obj:
+                            ideas.append(obj)
+                    except:
+                        pass
+        else:
+            ideas = []
 
     # 타입 분류: trend_score 6+ = trend, 3-5 = smart, 1-2 = random
     for idea in ideas:
